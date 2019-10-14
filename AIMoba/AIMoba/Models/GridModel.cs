@@ -60,7 +60,7 @@ namespace AIMoba.Models
             ResetCellsToDefault();
         }
 
-        // Minden mezõt semlegesre állít(egy játékoshoz sem tartozik)
+        // Minden mezõt semlegesre állít (egy játékoshoz sem tartozik)
         private void ResetCellsToDefault()
         {
             for (int i = 0; i < Height; i++)
