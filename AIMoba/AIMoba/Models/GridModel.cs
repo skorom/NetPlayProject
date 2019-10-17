@@ -1,12 +1,7 @@
+using AIMoba.Data;
 
 namespace AIMoba.Models
 {
-    // Maximum 4 játékos támogatott
-    public enum FieldState
-    {
-        None, PlayerOne, PlayerTwo, PlayerThree, PlayerFour
-    }
-
     public class GridModel
     {
         // Az tömb szélessége és magassága lekérhetõ, de csak külön metodus során állítható
@@ -38,7 +33,6 @@ namespace AIMoba.Models
         }
 
         // hamis értékkel tér vissza ha szabálytalan a lépés
-        // TODO: IsValidMove metódust implementálni
         public bool MakeMove(int iPos, int jPos, FieldState _fieldState)
         {
             if (IsValidMove(iPos, jPos))
@@ -52,12 +46,10 @@ namespace AIMoba.Models
             }
         }
 
-        public void SetSize(int width, int height)
+        // visszaadja a iPos, jPos koordinátákon tárolt mezõt
+        public FieldState GetFieldAtPosition(int iPos, int jPos)
         {
-            this.Width = width;
-            this.Height = height;
-            this.fields = new FieldState[Width, Height];
-            ResetCellsToDefault();
+            return fields[iPos, jPos];
         }
 
         // Minden mezõt semlegesre állít (egy játékoshoz sem tartozik)
@@ -72,8 +64,15 @@ namespace AIMoba.Models
             }
         }
 
+        // szabályos lépés feltételei
         private bool IsValidMove(int iPos, int jPos)
         {
+            // ha a cella foglalt, vagy nem létezik akkor a lépés hamis
+            if (iPos < 0 || iPos >= this.Height || jPos < 0 || jPos >= this.Width
+                || fields[iPos, jPos] != FieldState.None)
+            {
+                return false;
+            }
 
             return true;
         }
