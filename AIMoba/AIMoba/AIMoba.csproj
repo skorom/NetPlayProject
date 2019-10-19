@@ -4,8 +4,8 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
 
-
   <ItemGroup>
+    <None Include="wwwroot\images\bgimg.jpg" />
   </ItemGroup>
 
 </Project>

@@ -1,8 +1,55 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf8">
+   
+    <link rel="stylesheet" type="text/css" href="css/stilus.css"/>
+    <title>Amőba</title>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+
+</head>
+
+
+<body>
+    <section id="wrapper">
+        <nav>
+            <ul>
+                <li>
+                    <a class="dropdown" href="">New game</a>
+                    <ul>
+                        <li><a href="">1 player</a></li>
+                        <li><a href="">2 player</a></li>
+                        <li><a href="">Multiplayer</a></li>
+                    </ul>
+                </li>
+                <li><a href="">(elso)</a></li>
+
+                <li><a href="">(masodik)</a></li>
+                <li><a href="">Your rank</a></li>
+                <li><a href="">Rules of the game</a></li>
+            </ul>
+        </nav>
+    </section>
+    <table>
+        <tr>
+            <td id="lista">
+                <ol>
+                    <h2>Leaderboard</h2>
+                    <li>Bálint</li>
+                    <li>Kristóf</li>
+                    <li>Tomi</li>
+                </ol>
+            </td>
+            <td>
+                <canvas id="myCanvas">
+                </canvas>
+            </td>
+        </tr>
+
+    </table>
+
+
+</body>
+
+
+</html>
