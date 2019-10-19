@@ -8,15 +8,15 @@ namespace AIMoba.Controllers
 {
     public class GameController : Controller
     {
-        public IActionResult Game()
+        public IActionResult Page()
         {
-            return View();  //Megjeleníti az oldalt.
+            return View();
         }
-        
-        public class Player
+
+        public abstract class Player
         {
-            public int ID { get; set; } //a játékos azonosítója
-            public int score { get; set; }  //a játékos lépéseinek száma
+            public int ID { get; set; }
+            public int score { get; set; }
 
             public Player(int ID = 0, int score = 0)
             {
@@ -24,11 +24,7 @@ namespace AIMoba.Controllers
                 this.score = score;
             }
 
-            public void NextMove()
-            {
-                //játékos lépése
-            }
-
+            public abstract void NextMove();
         }
         public class Robot : Player
         {
@@ -41,7 +37,7 @@ namespace AIMoba.Controllers
                 this.difficulty = diff;
             }
 
-            public void NextRobotMove()
+            public override void NextMove()
             {
                 //robot lépése
             }
@@ -49,17 +45,18 @@ namespace AIMoba.Controllers
 
         public static void ShowWinner(int currentPlayer, int score)
         {
-            //eldönti, hogy ki nyert, és megjeleníti.
+            //TODO: eldönti, hogy ki nyert, és megjeleníti.
         }
 
         public static void RefreshPage()
         {
             //TODO: Oldal frissítése
         }
-
-        static void Main(string[] args)
+        
+        public static void Game()
         {
             GridModel grid;
+            int playerNumber = 3;
 
             Player[] players = new Player[playerNumber];
             players[playerNumber] = new Robot();
@@ -70,25 +67,29 @@ namespace AIMoba.Controllers
                 players[i].score = 0;
             }
 
+            Array.ForEach(players, i => i.ID = Convert.ToInt32(i)+1);
+            Array.ForEach(players, i => i.score = 0);
+
             int currentPlayer;
 
-            for (int i = 0; i < grid.Width * grid.Height; i++) //Minden cellán végigmegy, mert ennyi lépés lesz.
+            for (int i = 0; i < grid.Width * grid.Height; i++)
             {
                 currentPlayer = i % playerNumber;
 
-                players[currentPlayer].NextMove(); //Következő lépés.
+                players[currentPlayer].NextMove();
 
-                RefreshPage();  //Frissíti az oldalt, hogy látható legyen a változás.  
+                RefreshPage();
 
-                if (GameEnd())   //Megnézi, hogy nyert-e valaki, ha igen, akkor kilép a ciklusból.
+                if (GameEnd())
                 {
                     ShowWinner(currentPlayer, players[currentPlayer].score);
                     break;
                 }
-
             }
-
         }
 
-    }
-}
+        
+
+        
+
+
