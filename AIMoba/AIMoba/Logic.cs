@@ -17,117 +17,68 @@ namespace AIMoba
          Paraméterei:
             x: Amely sorba a játékos megtette lépését.
             y: Amely oszlopba a játékos megtette lépését.
-            lepes: Ahány szomszédos lépésnek össze kell gyűlnie a nyereséghez.
+            step: Ahány szomszédos lépésnek össze kell gyűlnie a nyereséghez.
         */
-        public bool GameEnd(GridModel table, int x, int y, int lepes)
+        public bool GameEnd(GridModel table, int x, int y, int step)
         {
-            /*
-            sum: szomszédos lépések száma.
-            testx, testy: összehasonlításhoz hassznált pozíciók.
-            */
-            int sum;
+            int testx = x, testy = y, borderx = 0, bordery = 0;
+            int sum = 0;
+
+            //A testdirx és testdiry tömbök határozzák meg az "irányt", amerre a függvény számolja a lépéseket.
+            int[] testdirx = { 0, 0, 1, -1, -1, 1, 1, -1 };
+            int[] testdiry = { 1, -1, 0, 0, 1, -1, 1, -1 };
             FieldState prev = table[x, y];
-            int testx, testy;
 
-            //A megtett lépéstől jobbra és balra eső lépések összeszámolása.
-            sum = 0;
-            testx = x;
-            testy = y + 1;
-
-            while (!(testy == table.Width + 1 || table[testx, testy - 1] != prev || sum == lepes))
+            for (int i = 0; i < 8; i++)
             {
-                testy++;
-                sum++;
-            }
+                //A testdirx és testdiry tömbök által meghatározott iránynak megfelelően megadja, hogy számolást végző while ciklus meddig mehet (borderx és bordery értéke).
+                switch (testdirx[i])
+                {
+                    case -1:
+                        borderx = -1;
+                        break;
+                    case 0:
+                        borderx = -2;
+                        break;
+                    case 1:
+                        borderx = table.Height;
+                        break;
+                }
+                switch (testdiry[i])
+                {
+                    case -1:
+                        bordery = -1;
+                        break;
+                    case 0:
+                        bordery = -2;
+                        break;
+                    case 1:
+                        bordery = table.Width;
+                        break;
+                }
 
-            testy = y - 1;
+                //Lépések számolását végző ciklus
+                while (!(testy == bordery || testx == borderx || table[testx, testy] != prev || sum == step))
+                {
+                    sum++;
+                    testx += testdirx[i];
+                    testy += testdiry[i];
+                }
 
-            while (!(testy == -2 || table[testx, testy + 1] != prev || sum == lepes + 1))
-            {
-                testy--;
-                sum++;
-            }
+                if ((i + 1) % 2 == 0)
+                {
+                    if (sum >= step)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        sum = 0;
+                    }
+                }
 
-            if (sum - 1 == lepes)
-            {
-                return true;
-            }
-
-            //A megtett lépés felett és alatt lévő lépések összeszámolása.
-
-            sum = 0;
-            testy = y;
-            testx--;
-
-            while (!(testx == -2 || table[testx + 1, testy] != prev || sum == lepes))
-            {
-                sum++;
-                testx--;
-            }
-
-            testx = x + 1;
-
-            while (!(testx == table.Height + 1 || table[testx - 1, testy] != prev || sum == lepes + 1))
-            {
-                sum++;
-                testx++;
-            }
-
-            if (sum - 1 == lepes)
-            {
-                return true;
-            }
-
-            //A megtett lépéstől átlós irányba eső lépések összeszámolása.
-            sum = 0;
-            testx = x - 1;
-            testy = y + 1;
-
-            while (!(testx == -2 || testy == table.Width + 1 || table[testx + 1, testy - 1] != prev || sum == lepes))
-            {
-                sum++;
-                testx--;
-                testy++;
-            }
-
-            testy = y - 1;
-            testx = x + 1;
-
-            while (!(testx == table.Height + 1 || testy == -2 || table[testx - 1, testy + 1] != prev || sum == lepes + 1))
-            {
-                sum++;
-                testx++;
-                testy--;
-            }
-
-            if (sum - 1 == lepes)
-            {
-                return true;
-            }
-
-            sum = 0;
-            testx = x + 1;
-            testy = y + 1;
-
-            while (!(testx == table.Height + 1 || testy == table.Width + 1 || table[testx - 1, testy - 1] != prev || sum == lepes))
-            {
-                sum++;
-                testx++;
-                testy++;
-            }
-
-            testx = x - 1;
-            testy = y - 1;
-
-            while (!(testx == -2 || testy == -2 || table[testx + 1, testy + 1] != prev || sum == lepes + 1))
-            {
-                sum++;
-                testx--;
-                testy--;
-            }
-            if (sum - 1 == lepes)
-            {
-                return true;
+                testx = x;
+                testy = y;
             }
 
             return false;
