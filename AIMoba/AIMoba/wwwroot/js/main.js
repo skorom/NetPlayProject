@@ -4,6 +4,7 @@ let canvas;
 let context;
 let cols = 20;
 let rows = 20;
+let cellSize;
 
 // a pálya háttérszíne, a setup függvényben kap értéket
 let backgroundColor;
@@ -32,17 +33,36 @@ let Colors = {
 };
 
 // az oldal betöltésével elindulnak a megjelenítéshez szükséges dolgok 
-window.addEventListener('DOMContentLoaded' ,(e) => {
+window.addEventListener('DOMContentLoaded' ,() => {
     setup();
     lastTimestamp = 0;
-    //window.requestAnimationFrame(draw);
+
+
+    canvas.addEventListener('click', (e) => {
+        let mousepos = getMousePos(e);
+        let iPos = Math.floor(mousepos.y / cellSize);
+        let jPos = Math.floor(mousepos.x / cellSize);
+        console.log(iPos, jPos);
+        // TODO: seng a request to the server
+    });
+
     draw(0);
+    //window.requestAnimationFrame(draw);
 });
+
+function getMousePos(e) {
+    var rect = canvas.getBoundingClientRect();
+    return {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+    };
+}
 
 // egyszer fut le az draw előtt
 function setup(){
     canvas = document.querySelector('#myCanvas');
     context = canvas.getContext('2d');
+    cellSize = canvas.width / cols;
 
     // lekerekített sarkok vonal végeknél és vonalok kapcsolódásakor
     context.lineCap = "round";
@@ -57,7 +77,7 @@ function setup(){
     // nincs kamera a játékban ezért célszerű aparamétereket úgy megadni hogy:
     // width = canvas szélesség / cellaSpaceing     vagy  cellaSpaceing = canvasSzélessége / width
     // height = canvas magassága / cellaSpaceing    vagy  cellaSpaceing = canvasSzélessége / height
-    amobaGrid = new Grid(cols, rows, canvas.width/cols, 6);
+    amobaGrid = new Grid(cols, rows, cellSize, 6);
     
     // TODO: kitörölni amikor az AImoba fő projectjébe kerül ez a kód
     fillWithDummyData(amobaGrid.fields, amobaGrid.width, amobaGrid.height, 5);
