@@ -25,6 +25,7 @@ namespace AIMoba.Controllers
             }
 
             public abstract void NextMove();
+            
         }
         public class Robot : Player
         {
@@ -52,7 +53,7 @@ namespace AIMoba.Controllers
         {
             //TODO: Oldal frissítése
         }
-        
+
         public static void Game()
         {
             GridModel grid;
@@ -61,13 +62,7 @@ namespace AIMoba.Controllers
             Player[] players = new Player[playerNumber];
             players[playerNumber] = new Robot();
 
-            for (int i = 0; i < playerNumber - 1; i++)
-            {
-                players[i].ID = i + 1;
-                players[i].score = 0;
-            }
-
-            Array.ForEach(players, i => i.ID = Convert.ToInt32(i)+1);
+            Array.ForEach(players, i => i.ID = Convert.ToInt32(i) + 1);
             Array.ForEach(players, i => i.score = 0);
 
             int currentPlayer;
@@ -87,6 +82,8 @@ namespace AIMoba.Controllers
                 }
             }
         }
+    }
+}
 
         
 
