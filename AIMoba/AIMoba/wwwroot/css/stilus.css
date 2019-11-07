@@ -1,5 +1,5 @@
-﻿body {
-    background-image: url(../images/bgimg.jpg);
+﻿.custom-container {
+    background-image: url(~/images/bgimg.jpg);
     height: auto;
     background-position: center;
     background-repeat: no-repeat;
