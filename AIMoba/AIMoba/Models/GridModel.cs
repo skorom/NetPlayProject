@@ -68,13 +68,13 @@ namespace AIMoba.Models
         private bool IsValidMove(int iPos, int jPos)
         {
             // ha a cella foglalt, vagy nem létezik akkor a lépés hamis
-            if (iPos < 0 || iPos >= this.Height || jPos < 0 || jPos >= this.Width
-                || fields[iPos, jPos] != FieldState.None)
-            {
-                return false;
-            }
+            return (iPos >= 0 && iPos < this.Height &&
+                jPos >= 0 && jPos < this.Width &&
+                fields[iPos, jPos] == FieldState.None);
 
-            return true;
+
+
+
         }
 
     }
