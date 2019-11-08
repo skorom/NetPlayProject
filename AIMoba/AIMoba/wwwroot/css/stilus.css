@@ -8,9 +8,10 @@
 
 #myCanvas {
     align-content: center;
-    width: 80%;
-    min-height: 100%;
-    border: solid 4px #A00800;
+    width: 520px !important;
+    height: 520px !important;
+    border: solid 1px #000;
+    box-shadow: 2px 2px rgba(0,0,0,150);
 }
 
 table {
