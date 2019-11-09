@@ -20,7 +20,6 @@ public class Robot : IPlayer
 
     public bool MakeMove(GridModel grid, Position pos = null)
     {
-        //TODO AI beépítése
-        return true;
+        return grid.MakeMove(pos.IPos, pos.JPos, this.Mark);
     }
 }
