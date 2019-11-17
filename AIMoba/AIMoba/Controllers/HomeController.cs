@@ -64,17 +64,17 @@ namespace AIMoba.Controllers
             // visszatérési adatok létrehozása
             if (success)
             {
-                message.ResponsMessage = "success";
+                message.ResponsMessage = true;
                 message.Data.Add(new Move(data.position, currentGame.players[data.PlayerID].Mark));
 
             }
             else
             {
-                message.ResponsMessage = "failed";
+                message.ResponsMessage = false;
             }
             if (!message.EndOfGame&&currentGame.Steps >= currentGame.grid.Width * currentGame.grid.Height)
             {
-                message.EndState = "draw"; // TODO: endofgame függvény beépítése
+                message.EndState = 0; // TODO: endofgame függvény beépítése
 
             }
             return message;

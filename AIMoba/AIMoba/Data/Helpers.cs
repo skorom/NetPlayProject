@@ -9,11 +9,11 @@ namespace AIMoba.Data
     public class Message
     {
         // az üzenet "success" vagy "failed"
-        public string ResponsMessage { get; set; }
+        public bool ResponsMessage { get; set; }
         // vége van e a játéknak
         public bool EndOfGame { get; set; }
         // milyen állás volt a tálán mikor végelett a játéknak
-        public string EndState { get; set; }
+        public int EndState { get; set; }
         // a pozíció ahová a játékos lépni szeretne
         public List<Move> Data { get; set; } = new List<Move>();
     }

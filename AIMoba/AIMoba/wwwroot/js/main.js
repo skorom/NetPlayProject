@@ -66,17 +66,17 @@ window.addEventListener('DOMContentLoaded' ,() => {
 });
 
 function handleResponse(data) {
-    if (data.responsMessage == "success") {
+    if (data.responsMessage == true) {
         for (let i = 0; i < data.data.length; i++) {
             amobaGrid.fields[data.data[i].pos.iPos][data.data[i].pos.jPos] = data.data[i].mark;
         }
         draw(0);
         if (data.endOfGame) {
-            if (data.endState == "you won") {
+            if (data.endState == 1) {
                 alert("you won");
-            } else if (data.endState == "you lost") {
+            } else if (data.endState == -1) {
                 alert("you lost");
-            } else if (data.endState == "draw") {
+            } else if (data.endState == 0) {
                 alert("draw");
             }
         }

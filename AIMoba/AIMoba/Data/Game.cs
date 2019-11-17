@@ -77,7 +77,7 @@ namespace AIMoba.Data
             {
                 IPlayer currentPlayer = players[data.PlayerID];
                 // ha a jelenlegi játékos köre következik
-                if (Steps % players.Count == 0)
+                if (Steps % players.Count == currentPlayer.Index)
                 {
                     if(currentPlayer.MakeMove(grid, data.position))
                     {
@@ -96,7 +96,7 @@ namespace AIMoba.Data
                 if (GameLogic.GameEnd(grid, data.position.IPos, data.position.JPos, 5))
                 {
                     message.EndOfGame = true;
-                    message.EndState = "you won";
+                    message.EndState = 1;
                     return true;
                 }
                 // ameddig robot következik a robot lép
@@ -112,7 +112,7 @@ namespace AIMoba.Data
                     if (GameLogic.GameEnd(grid, aiIPos, aiJPos, 5))
                     {
                         message.EndOfGame = true;
-                        message.EndState = "you lost";
+                        message.EndState = -1;
                     }
                 }
             }
