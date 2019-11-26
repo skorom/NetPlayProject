@@ -1,6 +1,7 @@
 using AIMoba.Data;
 using AIMoba.Models;
 using System.Collections.Generic;
+using AIMoba.Logic;
 
 namespace AIMoba.Data
 {
@@ -13,12 +14,12 @@ namespace AIMoba.Data
         public GridModel grid { get; set; }
 
         // a játékosokat, robotokat is beleértve tárolja 
-        private Dictionary<int,IPlayer> players = new Dictionary<int, IPlayer>();
+        public Dictionary<int,IPlayer> players = new Dictionary<int, IPlayer>();
         public Game(int id=0, int numberOfRobots=1)
         {
             grid = new GridModel();
             for (int i = 0; i < numberOfRobots; i++)
-                players.Add(id,new Robot(MapNumToState(players.Count+1)));
+                players.Add(i+1,new Robot(MapNumToState(players.Count+1)));
             this.ID = id;
             // sorszám megállapíttása
             ReIndex();
@@ -34,8 +35,8 @@ namespace AIMoba.Data
 
         private void ReIndex()
         {
-            int i = 1;
-            // végig megy a játékosokon és sorszámot ad nekik, fontos hogy a sorszám nem lehet 0
+            int i = 0;
+            // végig megy a játékosokon és sorszámot ad nekik
             foreach (var player in players.Values)
             {
                 if(!player.IsComputer)
@@ -69,14 +70,14 @@ namespace AIMoba.Data
 
         // kezeli az adat feldolgozását ( az adat a kontrollertől való ) 
         // visszatérési értéke akkor true ha a lépés szabályos és a saját körében történt
-        public bool Update(RequestData data)
+        public bool Update(RequestData data, Message message)
         {
             // ha létezik a játékos
             if (players.ContainsKey(data.PlayerID))
             {
                 IPlayer currentPlayer = players[data.PlayerID];
                 // ha a jelenlegi játékos köre következik
-                if (Steps % players.Count == 0)
+                if (Steps % players.Count == currentPlayer.Index)
                 {
                     if(currentPlayer.MakeMove(grid, data.position))
                     {
@@ -91,12 +92,28 @@ namespace AIMoba.Data
                 {
                     return false;
                 }
-                // ameddig robot kvetkezik a robot lép
-                while (SearchByIndex(Steps % players.Count)!= null && SearchByIndex(Steps % players.Count).IsComputer)
+
+                if (GameLogic.GameEnd(grid, data.position.IPos, data.position.JPos, 5))
                 {
-                    currentPlayer = SearchByIndex(Steps % currentPlayer.Index);
-                    currentPlayer.MakeMove(grid, null);
+                    message.EndOfGame = true;
+                    message.EndState = 1;
+                    return true;
+                }
+                // ameddig robot következik a robot lép
+                if (SearchByIndex(Steps % players.Count)!= null && SearchByIndex(Steps % players.Count).IsComputer)
+                {
+                    currentPlayer = SearchByIndex(Steps % players.Count);
+                    int aiJPos = 0;
+                    int aiIPos = 0;
+                    GameLogic.AI(grid, currentPlayer.Mark, ref aiIPos, ref aiJPos);
+                    message.Data.Add(new Move(new Position(aiIPos, aiJPos), currentPlayer.Mark));
+                    currentPlayer.MakeMove(grid, new Position(aiIPos,aiJPos));
                     Steps++;
+                    if (GameLogic.GameEnd(grid, aiIPos, aiJPos, 5))
+                    {
+                        message.EndOfGame = true;
+                        message.EndState = -1;
+                    }
                 }
             }
             return true;

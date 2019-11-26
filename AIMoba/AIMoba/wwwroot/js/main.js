@@ -43,12 +43,48 @@ window.addEventListener('DOMContentLoaded' ,() => {
         let iPos = Math.floor(mousepos.y / cellSize);
         let jPos = Math.floor(mousepos.x / cellSize);
         console.log(iPos, jPos);
-        // TODO: seng a request to the server
+
+        let params = window.location.pathname.split('/').filter(x => x.length != 0);
+        let gameID = parseInt(params[params.length - 2]);
+        let playerID = parseInt(params[params.length - 1]);
+        console.log(gameID, playerID);
+        fetch('../../makemove', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ GameID: gameID, PlayerID: playerID, Position: { IPos: iPos, JPos: jPos} })
+        }).then((res) => {
+            console.log(res);
+            return res.json();
+        }).then(handleResponse);
+
     });
 
     draw(0);
     //window.requestAnimationFrame(draw);
 });
+
+function handleResponse(data) {
+    if (data.responsMessage == true) {
+        for (let i = 0; i < data.data.length; i++) {
+            amobaGrid.fields[data.data[i].pos.iPos][data.data[i].pos.jPos] = data.data[i].mark;
+        }
+        draw(0);
+        if (data.endOfGame) {
+            if (data.endState == 1) {
+                alert("you won");
+            } else if (data.endState == -1) {
+                alert("you lost");
+            } else if (data.endState == 0) {
+                alert("draw");
+            }
+        }
+
+    } else {
+
+    }
+}
 
 function getMousePos(e) {
     var rect = canvas.getBoundingClientRect();
@@ -79,8 +115,8 @@ function setup(){
     // height = canvas magassága / cellaSpaceing    vagy  cellaSpaceing = canvasSzélessége / height
     amobaGrid = new Grid(cols, rows, cellSize, 6);
     
-    // TODO: kitörölni amikor az AImoba fő projectjébe kerül ez a kód
-    fillWithDummyData(amobaGrid.fields, amobaGrid.width, amobaGrid.height, 5);
+    
+    // fillWithDummyData(amobaGrid.fields, amobaGrid.width, amobaGrid.height, 5);
 }
 
 // folyamatos frissítés

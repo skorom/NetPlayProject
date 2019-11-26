@@ -106,8 +106,8 @@ class Grid{
 
         // egy dictionary amely a játékosokhoz rendeli az alakzatokat
         this.symbols = {
-            1: symbolX,           // PlayerOne
             2: symbolO,           // PlayerTwo
+            1: symbolX,           // PlayerOne
             3: symbolTriangle,    // PlayerThree
             4: symbolQuad         // PlayerFour 
         };

@@ -21,7 +21,7 @@ namespace AIMoba.Data
         // visszatérési értéke a lépés helyességétől függ
         public bool MakeMove(GridModel grid, Position pos)
         {
-            return grid.MakeMove(pos.IPos, pos.jPos, this.Mark);
+            return grid.MakeMove(pos.IPos, pos.JPos, this.Mark);
         }
 
     }

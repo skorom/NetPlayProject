@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using AIMoba.Models;
 using AIMoba.Data;
+using AIMoba.Logic;
 
 namespace AIMoba.Controllers
 {
@@ -59,20 +60,23 @@ namespace AIMoba.Controllers
                 return null;
             }
             // lépés feldolgozása
-            bool success = currentGame.Update(data);
+            bool success = currentGame.Update(data,message);
             // visszatérési adatok létrehozása
             if (success)
             {
-                message.ResponsMessage = "success";
-                message.position = data.position;
+                message.ResponsMessage = true;
+                message.Data.Add(new Move(data.position, currentGame.players[data.PlayerID].Mark));
+
             }
             else
             {
-                message.ResponsMessage = "failed";
+                message.ResponsMessage = false;
             }
-            message.EndState = ""; // TODO: endofgame függvény beépítése
-            message.EndOfGame = ( currentGame.Steps-1 <= currentGame.grid.Width * currentGame.grid.Height);
-            Console.WriteLine("yeeeey");
+            if (!message.EndOfGame&&currentGame.Steps >= currentGame.grid.Width * currentGame.grid.Height)
+            {
+                message.EndState = 0; // TODO: endofgame függvény beépítése
+
+            }
             return message;
         }
 
