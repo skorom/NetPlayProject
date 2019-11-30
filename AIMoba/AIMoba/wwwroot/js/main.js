@@ -5,6 +5,7 @@ let context;
 let cols = 20;
 let rows = 20;
 let cellSize;
+let endPicture;
 
 // a pálya háttérszíne, a setup függvényben kap értéket
 let backgroundColor;
@@ -38,32 +39,33 @@ window.addEventListener('DOMContentLoaded' ,() => {
     lastTimestamp = 0;
 
 
-    canvas.addEventListener('click', (e) => {
-        let mousepos = getMousePos(e);
-        let iPos = Math.floor(mousepos.y / cellSize);
-        let jPos = Math.floor(mousepos.x / cellSize);
-        console.log(iPos, jPos);
-
-        let params = window.location.pathname.split('/').filter(x => x.length != 0);
-        let gameID = parseInt(params[params.length - 2]);
-        let playerID = parseInt(params[params.length - 1]);
-        console.log(gameID, playerID);
-        fetch('../../makemove', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ GameID: gameID, PlayerID: playerID, Position: { IPos: iPos, JPos: jPos} })
-        }).then((res) => {
-            console.log(res);
-            return res.json();
-        }).then(handleResponse);
-
-    });
+    canvas.addEventListener('click', handlePlayerInput);
 
     draw(0);
     //window.requestAnimationFrame(draw);
 });
+
+function handlePlayerInput(e) {
+    let mousepos = getMousePos(e);
+    let iPos = Math.floor(mousepos.y / cellSize);
+    let jPos = Math.floor(mousepos.x / cellSize);
+    console.log(iPos, jPos);
+
+    let params = window.location.pathname.split('/').filter(x => x.length != 0);
+    let gameID = parseInt(params[params.length - 2]);
+    let playerID = parseInt(params[params.length - 1]);
+    console.log(gameID, playerID);
+    fetch('../../makemove', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ GameID: gameID, PlayerID: playerID, Position: { IPos: iPos, JPos: jPos } })
+    }).then((res) => {
+        console.log(res);
+        return res.json();
+    }).then(handleResponse);
+}
 
 function handleResponse(data) {
     if (data.responsMessage == true) {
@@ -72,18 +74,29 @@ function handleResponse(data) {
         }
         draw(0);
         if (data.endOfGame) {
+            canvas.removeEventListener('click', handlePlayerInput);
+            endPicture.onload = function () {
+                setTimeout(handleEndOfGame, 1500);
+            }    
             if (data.endState == 1) {
-                alert("you won");
+                endPicture.src = '../../../images/gamewon.svg';
             } else if (data.endState == -1) {
-                alert("you lost");
+                endPicture.src = '../../../images/gamelost.svg';
             } else if (data.endState == 0) {
-                alert("draw");
+                endPicture.src = '../../../images/gamedraw.svg';
             }
+            endPicture.width = canvas.width;
+            endPicture.height = canvas.height;
+            endPicture.style.backgroundColor = "black";
         }
 
-    } else {
+    } 
+}
 
-    }
+function handleEndOfGame() {
+
+    canvas.parentElement.appendChild(endPicture);
+    canvas.parentElement.removeChild(canvas);
 }
 
 function getMousePos(e) {
@@ -99,7 +112,7 @@ function setup(){
     canvas = document.querySelector('#myCanvas');
     context = canvas.getContext('2d');
     cellSize = canvas.width / cols;
-
+    endPicture = new Image();
     // lekerekített sarkok vonal végeknél és vonalok kapcsolódásakor
     context.lineCap = "round";
     context.lineJoin = "round";
