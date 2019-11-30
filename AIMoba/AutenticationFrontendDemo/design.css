@@ -1,0 +1,53 @@
+* {
+  font-family: url("https://www.jsdelivr.com/package/npm/futura-font");
+}
+
+.title {
+  font-size: 60px;
+  color: #fff;
+  text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #ff0080, 0 0 30px #ff0080,
+    0 0 40px #ff0080, 0 0 55px #ff0080, 0 0 75px #ff0080;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+body {
+  background: black;
+}
+
+label {
+  color: #fff;
+  font-variant: small-caps;
+  text-shadow: 0 0 2px #fff, 0 0 3px #a10159, 0 0 20px #a10159;
+}
+
+input {
+  box-shadow: 0 0 5px #fff, 0 0 7px #fff, 0 0 15px #a10159, 0 0 25px #a10159;
+}
+
+input:hover {
+  box-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #a10159, 0 0 35px #a10159;
+}
+input.form-control:focus {
+  box-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #a10159, 0 0 35px #a10159;
+  border: 0.2em solid #ff5fb7cb;
+}
+
+button{
+  background: #a10159!important;
+  border: 2px solid #a10159!important ;
+  box-shadow: 0 0 5px #fff, 0 0 15px #a10159, 0 0 25px #a10159;
+}
+
+button:hover{
+  background: #ac015f!important;
+  border: 2px solid #ac015f!important ;
+  box-shadow: 0 0 5px #fff, 0 0 15px #a10159, 0 0 25px #a10159, 0 0 40px #a10159;
+}
+
+button.form-control:focus{
+  background: #800147!important;
+  border: 2px solid #800147!important ;
+  outline: 0px;
+  box-shadow: 0 0 5px #fff, 0 0 15px #a10159, 0 0 25px #a10159, 0 0 40px #a10159;
+}
