@@ -126,7 +126,7 @@ namespace Logika
                             CPU = FieldState.PlayerFour;
                             break;
                     }
-                    AI(table, CPU, ref px, ref py);
+                    AI(table, CPU, ref px, ref py, players);
                     table.MakeMove(px, py, CPU);
                     end = GameEnd(table, px, py, 5);
                 }
@@ -205,15 +205,12 @@ namespace Logika
        Az AI függvény először minden üres cellának ad egy értéket hasznosság alapján,
        majd ezekből az értékekből választja ki a legjobb lehetőséget.
        */
-        static void AI(GridModel table, FieldState CPU, ref int aix, ref int aiy)
+        static void AI(GridModel table, FieldState CPU, ref int aix, ref int aiy, int players)
         {
-            int cellValue=0;
             int currentX=0, currentY=0;
-            int cellValueColumnAI=0, cellValueRowAI=0, cellValueAcrossAI=0, AIcellValue=0;
-            int cellValueColumnP1=0, cellValueRowP1=0, cellValueAcrossP1=0, P1cellValue=0;
-
             int[,] valuesTable=new int[table.Height,table.Width];
-            getValues(table, CPU, valuesTable, currentX, currentY, AIcellValue, P1cellValue, cellValueRowAI, cellValueColumnAI, cellValueAcrossAI, cellValueRowP1, cellValueColumnP1, cellValueAcrossP1, cellValue);
+
+            getValues(table, valuesTable, currentX, currentY,players);
 
             int bestMoveX=0, bestMoveY=0, bestValue=0;
 
@@ -262,9 +259,10 @@ namespace Logika
             Console.ReadKey();
         }
 
-        static void getValues(GridModel table, FieldState CPU, int[,] valuesTable, int currentX, int currentY, int AIcellValue, int P1cellValue, int cellValueRowAI, int cellValueColumnAI,
-            int cellValueAcrossAI, int cellValueRowP1, int cellValueColumnP1, int cellValueAcrossP1, int cellValue)
+        static void getValues(GridModel table, int[,] valuesTable, int currentX, int currentY, int players)
         {
+            int P1cellValue = 0, P2cellValue = 0, P3cellValue = 0, AIcellValue = 0;
+            FieldState checkedState = FieldState.None;
             for (int x = 1; x < table.Height-1; x++)
             {
                 for (int y = 1; y < table.Width-1; y++)
@@ -273,35 +271,87 @@ namespace Logika
                     {
                         currentX = x;
                         currentY = y;
-                        cellValue = 0;
-                        AIcellValue = cellValueAI(table, CPU, currentX, currentY, cellValueRowAI, cellValueColumnAI, cellValueAcrossAI);
-                        P1cellValue = cellValuePlayerOne(table, currentX, currentY, cellValueRowP1, cellValueColumnP1, cellValueAcrossP1);
+                        switch (players)
+                        {
+                            case 2:
+                                checkedState = FieldState.PlayerOne;
+                                P1cellValue = cellValue(table, currentX, currentY, checkedState);
+                                checkedState = FieldState.PlayerTwo;
+                                AIcellValue = cellValue(table, currentX, currentY, checkedState);
 
-                        if (AIcellValue == 1)
-                        {
-                            cellValue = 1;
-                        }
-                        else
-                        {
-                            if (P1cellValue == 2)
-                            {
-                                cellValue = 2;
-                            }
-                            else
-                            {
-                                if (P1cellValue > AIcellValue)
+                                if (AIcellValue >= P1cellValue)
                                 {
-                                    cellValue = P1cellValue;
+                                    valuesTable[x, y] = AIcellValue;
                                 }
-                            }
-                        }
-                        valuesTable[x, y] = cellValue;
+                                else
+                                {
+                                    valuesTable[x, y] = P1cellValue;
+                                }
+
+                                
+                                break;
+                            case 3:
+                                checkedState = FieldState.PlayerOne;
+                                P1cellValue = cellValue(table, currentX, currentY, checkedState);
+                                checkedState = FieldState.PlayerTwo;
+                                P2cellValue = cellValue(table, currentX, currentY, checkedState);
+                                checkedState = FieldState.PlayerThree;
+                                AIcellValue = cellValue(table, currentX, currentY, checkedState);
+
+                                int[] tempArray=new int[players];
+
+                                tempArray[0] = P1cellValue;
+                                tempArray[1] = P2cellValue;
+                                tempArray[2] = AIcellValue;
+                                for (int i = 0; i < players; i++)
+                                {
+                                    //maximumkeresés
+                                }
+
+                                
+                                
+                                
+                                break;
+                        }       
+                        
+                        
                     }
                 }
             }
         }
         
-        static int cellValueAI(GridModel table, FieldState CPU, int currentX, int currentY, int cellValueRowAI, int cellValueColumnAI, int cellValueAcrossAI)
+        static int cellValue(GridModel table, int currentX, int currentY, FieldState checkedState)
+        {
+            int[] directionsX = { 0, 0, 1, -1, -1, 1, 1, -1 };
+            int[] directionsY = { 1, -1, 0, 0, 1, -1, 1, -1 };
+            int sumX = 0, sumY = 0;
+            int sum = 0;
+            int maxValue = 0;
+
+            for (int i = 0; i < 8; i++)
+            {                
+                sumX = currentX;
+                sumY = currentY;
+                while(sumY != table.Width || sumX != table.Height || table[sumX+directionsX[i], sumY+directionsY[i]] != checkedState || sum == 5)
+                {
+                    sum++;
+                    sumX = sumX + directionsX[i];
+                    sumY = sumY + directionsY[i];
+                }
+                if (i % 2 == 0)
+                {
+                    if (sum > maxValue)
+                    {
+                        maxValue = sum;
+                    }
+                    sum = 0;
+                }
+
+            }
+            return sum;
+        }
+        
+        /*static int cellValueAI(GridModel table, FieldState CPU, int currentX, int currentY, int cellValueRowAI, int cellValueColumnAI, int cellValueAcrossAI)
         {   
             int value = 0;
             cellValueAcrossAI=cellValueAIAcross(table,CPU,currentX,currentY);
@@ -467,7 +517,46 @@ namespace Logika
                 return down;
             }
         }
-        
+        static int cellValueAIAcrossR(GridModel table, FieldState CPU, int currentX, int currentY)
+        {
+            int up = 0, down = 0;
+            int y = currentY + 1;
+
+            for (int x = currentX + 1; x < table.Height; x++)
+            {
+                if (table[x, y] == CPU)
+                {
+                    down++;
+                }
+                else
+                {
+                    break;
+                }
+                y++;
+            }
+            y = currentY - 1;
+            for (int x = currentX - 1; x > 0; x--)
+            {
+                if (table[x, y] == CPU)
+                {
+                    up++;
+                }
+                else
+                {
+                    break;
+                }
+                y--;
+            }
+            if (up >= down)
+            {
+                return up;
+            }
+            else
+            {
+                return down;
+            }
+        }
+
         static int cellValuePlayerOne(GridModel table, int currentX, int currentY, int cellValueRowP1, int cellValueColumnP1, int cellValueAcrossP1)
         {
             int value = 0;
@@ -638,7 +727,7 @@ namespace Logika
             {
                 return down;
             }
-        }
+        }*/
         /*
         A GameEnd függyvény megvizsgálja a beérkező x, y pozíciók alapján, hogy a lépést végrehajtó játékosnak összegyűlt-e a szükséges mennyiségű szomszédos lépése.
         Igaz értéket ad vissza ha összegyűlt, tehát a játéknak vége.
