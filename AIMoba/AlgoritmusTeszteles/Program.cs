@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Numerics;
 
 namespace Logika
 {
@@ -83,6 +84,12 @@ namespace Logika
 
     }
 
+    public class Cells
+    {
+        public int value;
+        public int x;
+        public int y;
+    }
     class Program
     {
 
@@ -207,56 +214,49 @@ namespace Logika
        */
         static void AI(GridModel table, FieldState CPU, ref int aix, ref int aiy, int players)
         {
-            int currentX=0, currentY=0;
-            int[,] valuesTable=new int[table.Height,table.Width];
+            int currentX = 0, currentY = 0;
+            int[,] valuesTable = new int[table.Height, table.Width];
 
-            getValues(table, valuesTable, currentX, currentY,players);
+            getValues(table, valuesTable, currentX, currentY, players);
 
-            int bestMoveX=0, bestMoveY=0, bestValue=0;
+            int tempMax = 0;
+            List<Cells> bestValues = new List<Cells>();
+            Random rnd = new Random();
+            int random=0;
 
             for (int x = 0; x < table.Height; x++)
-			{
-                for (int y = 0; y < table.Width; y++)
-			    {                 
-                    if(valuesTable[x,y]==1)
-                    {
-                        bestMoveX=x;
-                        bestMoveY=y;
-                        bestValue=10;
-                        break;
-                    }else
-                    {
-                        if(valuesTable[x,y]==2)
-                        {
-                            bestMoveX=x;
-                            bestMoveY=y;
-                            bestValue=10;
-                            break;
-                        }else
-                        {
-                            if(valuesTable[x,y]>=bestValue)
-                            {
-                                bestValue=valuesTable[x,y];
-                                bestMoveX=x;
-                                bestMoveY=y;
-                            }
-                        }                       
-                    }
-                    
-			    }
-            }
-            aix=bestMoveX;
-            aiy=bestMoveY;
-
-            for (int i = 0; i < table.Height; i++)
             {
-                for (int j = 0; j < table.Width; j++)
+                for (int y = 0; y < table.Width; y++)
                 {
-                    Console.Write(valuesTable[i, j]);
+                    if (valuesTable[x, y] >= tempMax)
+                    {
+                        tempMax = valuesTable[x, y];
+                    }
                 }
-                Console.WriteLine();
             }
+            for (int x = 0; x < table.Height; x++)
+            {
+                for (int y = 0; y < table.Width; y++)
+                {
+                    if (valuesTable[x, y] == tempMax)
+                    {                        
+                        bestValues.Add(new Cells { value = tempMax, x = x, y = y });
+                        Console.WriteLine(bestValues[bestValues.Count-1].value + " X: " + bestValues[bestValues.Count-1].x + " Y: " + bestValues[bestValues.Count-1].y);
+                    }
+                }
+            }
+            Console.WriteLine("bestValues:");
+            Console.WriteLine(bestValues[bestValues.Count - 1].value+" "+bestValues[bestValues.Count-1].x + " " +bestValues[bestValues.Count-1].y);
+            for (int i = 0; i < bestValues.Count; i++)
+            {
+                Console.WriteLine(bestValues[i].value+ " X: "+bestValues[i].x + " Y: " + bestValues[i].y);
+            }
+            random = rnd.Next(0, bestValues.Count-1);
+            Console.WriteLine("random: "+random);           
+            aix = bestValues[random].x;
+            aiy = bestValues[random].y;
             Console.ReadKey();
+
         }
 
         static void getValues(GridModel table, int[,] valuesTable, int currentX, int currentY, int players)
@@ -271,6 +271,7 @@ namespace Logika
                     {
                         currentX = x;
                         currentY = y;
+                        int[] tempArray = new int[players];
                         switch (players)
                         {
                             case 2:
@@ -297,27 +298,63 @@ namespace Logika
                                 P2cellValue = cellValue(table, currentX, currentY, checkedState);
                                 checkedState = FieldState.PlayerThree;
                                 AIcellValue = cellValue(table, currentX, currentY, checkedState);
-
-                                int[] tempArray=new int[players];
+                                
+                                int tempMax=0;
 
                                 tempArray[0] = P1cellValue;
                                 tempArray[1] = P2cellValue;
                                 tempArray[2] = AIcellValue;
+
                                 for (int i = 0; i < players; i++)
                                 {
-                                    //maximumkeresés
+                                    if (tempArray[i] >= tempMax)
+                                    {
+                                        tempMax = tempArray[i];
+                                    }    
                                 }
-
-                                
-                                
-                                
+                                valuesTable[x, y] = tempMax;
+                                                                                                
                                 break;
-                        }       
-                        
-                        
+                            case 4:
+                                checkedState = FieldState.PlayerOne;
+                                P1cellValue = cellValue(table, currentX, currentY, checkedState);
+                                checkedState = FieldState.PlayerTwo;
+                                P2cellValue = cellValue(table, currentX, currentY, checkedState);
+                                checkedState = FieldState.PlayerThree;
+                                P3cellValue = cellValue(table, currentX, currentY, checkedState);
+                                checkedState = FieldState.PlayerFour;
+                                AIcellValue = cellValue(table, currentX, currentY, checkedState);
+
+                                tempMax = 0;
+
+                                tempArray[0] = P1cellValue;
+                                tempArray[1] = P2cellValue;
+                                tempArray[2] = P3cellValue;
+                                tempArray[3] = AIcellValue;
+
+                                for (int i = 0; i < players; i++)
+                                {
+                                    if (tempArray[i] >= tempMax)
+                                    {
+                                        tempMax = tempArray[i];
+                                    }
+                                }
+                                valuesTable[x, y] = tempMax;
+
+                                break;
+                        }                                                       
                     }
                 }
             }
+            for(int i = 0; i < table.Height; i++)
+            {
+                for (int j = 0; j < table.Width; j++)
+                {
+                    Console.Write(valuesTable[i,j]);
+                }
+                Console.WriteLine();
+            }
+            Console.ReadKey();
         }
         
         static int cellValue(GridModel table, int currentX, int currentY, FieldState checkedState)
@@ -332,11 +369,11 @@ namespace Logika
             {                
                 sumX = currentX;
                 sumY = currentY;
-                while(sumY != table.Width || sumX != table.Height || table[sumX+directionsX[i], sumY+directionsY[i]] != checkedState || sum == 5)
+                while(!(sumY == table.Width || sumX == table.Height || table[sumX+directionsX[i], sumY+directionsY[i]] != checkedState || sum == 5))
                 {
                     sum++;
-                    sumX = sumX + directionsX[i];
-                    sumY = sumY + directionsY[i];
+                    sumX += directionsX[i];
+                    sumY += directionsY[i];
                 }
                 if (i % 2 == 0)
                 {
@@ -348,386 +385,10 @@ namespace Logika
                 }
 
             }
-            return sum;
+            return maxValue;
         }
         
-        /*static int cellValueAI(GridModel table, FieldState CPU, int currentX, int currentY, int cellValueRowAI, int cellValueColumnAI, int cellValueAcrossAI)
-        {   
-            int value = 0;
-            cellValueAcrossAI=cellValueAIAcross(table,CPU,currentX,currentY);
-            cellValueRowAI=cellValueAIRow(table,CPU,currentX,currentY);
-            cellValueColumnAI=cellValueAIColumn(table,CPU,currentX,currentY);
-            
-            if(cellValueAcrossAI>=cellValueColumnAI)
-            {
-                if(cellValueAcrossAI>=cellValueRowAI)
-                {
-                    value=cellValueAcrossAI;
-                }else
-                {
-                    value=cellValueRowAI;
-                }
-            }else
-            {
-                if(cellValueColumnAI>=cellValueRowAI)
-                {
-                    value=cellValueColumnAI;
-                }else
-                {
-                    value=cellValueRowAI;
-                }
-            }
-
-            if (value == 4)
-            {
-                return 1;
-            }
-            else
-            {
-                if (value == 3)
-                {
-                    return 7;
-                }
-                else
-                {
-                    if (value == 2)
-                    {
-                        return 5;
-                    }
-                    else
-                    {
-                        if (value == 1)
-                        {
-                            return 3;
-                        }
-                        else
-                        {
-                            if (value == 0)
-                            {
-                                return 0;
-                            }
-                            else
-                            {
-                                return 20;
-                            }
-                        }
-                    }
-                }
-            }            
-        }
-        static int cellValueAIRow(GridModel table, FieldState CPU, int currentX, int currentY)
-        {
-            int right=0, left=0;
-            for (int r = currentY+1; r < table.Width; r++)
-            {
-                if (table[currentX, r] == CPU)
-                {
-                    right++;
-                }
-                else
-                {
-                    break;
-                }
-            }
-            for (int r = currentY-1; r > 0 ; r--)
-            {
-                if (table[currentX, r] == CPU)
-                {
-                    left++;
-                }
-                else
-                {
-                    break;
-                }
-            }
-            if(right>=left)
-            {
-                return right;
-            }else
-            {
-                return left;
-            }
-        }
-        static int cellValueAIColumn(GridModel table, FieldState CPU, int currentX, int currentY)
-        {
-            int up = 0, down = 0;
-            for (int c = currentX+1; c < table.Height-1; c++)
-            {
-                if (table[c, currentY] == CPU)
-                {
-                    down++;
-                }
-                else
-                {
-                    break;
-                }
-            }
-            for (int c = currentX-1; c > 0; c--)
-            {
-                if (table[c, currentY] == CPU)
-                {
-                    up++;
-                }
-                else
-                {
-                    break;
-                }
-            }
-            if(up>=down)
-            {
-                return up;
-            }else
-            {
-                return down;
-            }
-        }
-        static int cellValueAIAcross(GridModel table, FieldState CPU, int currentX, int currentY)
-        {
-            int up = 0, down = 0;
-            int y=currentY+1;
-
-            for (int x = currentX+1; x < table.Height; x++)
-			{
-                if(table[x,y]==CPU)
-                {
-                    down++;
-                }else
-                {
-                    break;
-                }
-                y++;
-			}
-            y=currentY-1;
-            for (int x = currentX-1; x > 0; x--)
-			{
-                if(table[x,y]==CPU)
-                {
-                    up++;
-                }else
-                {
-                    break;
-                }
-                y--;
-			}
-            if(up>=down)
-            {
-                return up;
-            }else
-            {
-                return down;
-            }
-        }
-        static int cellValueAIAcrossR(GridModel table, FieldState CPU, int currentX, int currentY)
-        {
-            int up = 0, down = 0;
-            int y = currentY + 1;
-
-            for (int x = currentX + 1; x < table.Height; x++)
-            {
-                if (table[x, y] == CPU)
-                {
-                    down++;
-                }
-                else
-                {
-                    break;
-                }
-                y++;
-            }
-            y = currentY - 1;
-            for (int x = currentX - 1; x > 0; x--)
-            {
-                if (table[x, y] == CPU)
-                {
-                    up++;
-                }
-                else
-                {
-                    break;
-                }
-                y--;
-            }
-            if (up >= down)
-            {
-                return up;
-            }
-            else
-            {
-                return down;
-            }
-        }
-
-        static int cellValuePlayerOne(GridModel table, int currentX, int currentY, int cellValueRowP1, int cellValueColumnP1, int cellValueAcrossP1)
-        {
-            int value = 0;
-            cellValueAcrossP1 = 0;
-            cellValueColumnP1 = 0;
-            cellValueRowP1 = 0;
-            cellValueAcrossP1=cellValuePlayerOneAcross(table,currentX,currentY);
-            cellValueRowP1=cellValuePlayerOneRow(table,currentX,currentY);
-            cellValueColumnP1=cellValuePlayerOneColumn(table,currentX,currentY);
-            Console.WriteLine("X: "+currentX+" Y: " + currentY + " AcrossP1: "+cellValueAcrossP1+" RowP1: "+cellValueRowP1+" columnP1: " + cellValueColumnP1);
-
-            if (cellValueAcrossP1>=cellValueColumnP1)
-            {
-                if(cellValueAcrossP1>=cellValueRowP1)
-                {
-                    value=cellValueAcrossP1;
-                }else
-                {
-                    value=cellValueRowP1;
-                }
-            }else
-            {
-                if(cellValueColumnP1>=cellValueRowP1)
-                {
-                    value=cellValueColumnP1;
-                }else
-                {
-                    value=cellValueRowP1;
-                }
-            }
-
-            if (value == 4)
-            {
-                return 2;
-            }
-            else
-            {
-                if (value == 3)
-                {
-                    return 8;
-                }
-                else
-                {
-                    if (value == 2)
-                    {
-                        return 6;
-                    }
-                    else
-                    {
-                        if (value == 1)
-                        {
-                            return 4;
-                        }
-                        else
-                        {
-                            if (value == 0)
-                            {
-                                return 0;
-                            }
-                            else
-                            {
-                                return 20;
-                            }
-                        }
-                    }
-                }
-            }            
-        }
-        static int cellValuePlayerOneRow(GridModel table, int currentX, int currentY)
-        {
-            int right=0, left=0;
-
-            for (int r = currentY+1; r < table.Width; r++)
-            {
-                if (table[currentX, r] == FieldState.PlayerOne)
-                {
-                    right++;
-                }
-                else
-                {
-                    break;
-                }
-            }
-            for (int r = currentY-1; r > 0 ; r--)
-            {
-                if (table[currentX, r] == FieldState.PlayerOne)
-                {
-                    left++;
-                }
-                else
-                {
-                    break;
-                }
-            }
-            if(right>=left)
-            {
-                return right;
-            }else
-            {
-                return left;
-            }
-        }
-        static int cellValuePlayerOneColumn(GridModel table, int currentX, int currentY)
-        {
-            int up = 0, down = 0;
-            for (int c = currentX+1; c < table.Height; c++)
-            {
-                if (table[c, currentY] == FieldState.PlayerOne)
-                {
-                    down++;
-                }
-                else
-                {
-                    break;
-                }
-            }
-            for (int c = currentX-1; c > 0; c--)
-            {
-                if (table[c, currentY] == FieldState.PlayerOne)
-                {
-                    up++;
-                }
-                else
-                {
-                    break;
-                }
-            }
-            if(up>=down)
-            {
-                return up;
-            }else
-            {
-                return down;
-            }
-        }
-        static int cellValuePlayerOneAcross(GridModel table, int currentX, int currentY)
-        {
-            int up = 0, down = 0;
-            int y=currentY+1;
-
-            for (int x = currentX+1; x < table.Height; x++)
-			{
-                if(table[x,y] == FieldState.PlayerOne)
-                {
-                    down++;
-                }else
-                {
-                    break;
-                }
-                y++;
-			}
-            y=currentY-1;
-            for (int x = currentX-1; x > 0; x--)
-			{
-                if(table[x,y]==FieldState.PlayerOne)
-                {
-                    up++;
-                }else
-                {
-                    break;
-                }
-                y--;
-			}
-            if(up>=down)
-            {
-                return up;
-            }else
-            {
-                return down;
-            }
-        }*/
+        
         /*
         A GameEnd függyvény megvizsgálja a beérkező x, y pozíciók alapján, hogy a lépést végrehajtó játékosnak összegyűlt-e a szükséges mennyiségű szomszédos lépése.
         Igaz értéket ad vissza ha összegyűlt, tehát a játéknak vége.
