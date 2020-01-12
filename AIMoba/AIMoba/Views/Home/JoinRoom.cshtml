@@ -1,12 +1,82 @@
-﻿
-<h1>Most a @ViewBag.roomName szobában tartózkodsz</h1>
-<p>Gyere meghívlak:</p>
-<input id="inviteName" type="text" />
-<button id="inviteButton">meghívás</button>
-<h1 id="kicsoda">Kicsoda</h1>
+﻿@model IEnumerable<AIMoba.Models.PlayerModel>
+@{ 
+    int i = 1;
+}
+
+<script defer src="~/js/record.js"></script>
+<script defer src="~/js/room_logic.js"></script>
+<script defer src="~/js/invite.js"></script>
+
+<link rel="stylesheet" href="~/css/custom-joinroom-stiles.css" />
+
 <p hidden id="roomName">@ViewBag.roomName</p>
 <p hidden id="name">@ViewBag.name</p>
-<button id="readyButton" class="btn btn-primary">Készen állok</button>
-<button id="startButton" class="btn btn-success">Játék elkezdése</button>
 
-<script src="~/js/invite.js"></script>
+<!-- Felugró ablak eleje -->
+
+<div id="back-cover"></div>
+<div id="add-player-prompt">
+    <div class="mx-auto pt-3 px-3">
+        <h3 class="text-center custom-glowing-title">Hívd meg a barátaid!</h3>
+        <div>
+            <div class="form-group">
+                <label for="add-player-name">Felhasználónév:</label>
+                <input type="text" id="inviteName" placeholder="Felhasználónév" class="form-control">
+                <div class="pt-3 clearfix">
+                    <input type="button" id="cancel-player-addition" value="Mégse" class="btn btn-danger p-2 d-inline float-right">
+                    <input type="button" id="inviteButton" value="Meghívás" class="btn btn-success p-2 d-inline float-right mr-3">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Felugró ablak vége -->
+
+<div class="container mt-5">
+    <div class="text-center">
+        <h1 class="large bold mb-5 custom-glowing-title">@ViewBag.roomName</h1>
+    </div>
+    <div>
+        <div class="d-block clearfix w-100">
+            <p class="d-inline-block float-left custom-label">Játékosok:</p>
+            <button id="add-player" class="d-inline-block float-right btn btn-success mr-2">
+                <i class="fa fa-plus"></i>
+            </button>
+        </div>
+        <table id="players" class="table w-100 table-striped table-hover">
+            <tr>
+                <th>#</th>
+                <th>Név</th>
+                <th>Pontszám</th>
+                <th>Szerep</th>
+                <th>Státusz</th>
+                <th></th>
+            </tr>
+            @if(Model != null)
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@i</td>
+                        <td>@item.Name</td>
+                        <td>@item.Score</td>
+                        <td>@item.Role.ToString()</td>
+                        <td>@item.State.ToString()</td>
+                    </tr>
+                    i+= 1;
+
+                }
+
+            }
+
+
+        </table>
+    </div>
+
+    <div class="clearfix">
+        <a href="./index.html" class="btn btn-danger p-2 mx-5 mb-3 float-right">Szoba elhagyása</a>
+        <button id="readyButton" class="btn btn-primary">Készen állok</button>
+        <button id="startButton" class="btn btn-primary">Játék elkezdése</button>
+    </div>
+</div>

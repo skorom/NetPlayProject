@@ -21,9 +21,9 @@ namespace AIMoba.Controllers
             _logger = logger;
         }
 
-        public IActionResult CreateRoom(){
-            string name = HttpContext.Request.Form["name"];
-            ViewBag.name = name;
+        public IActionResult CreateRoom(string roomname){
+            
+            ViewBag.name = roomname; // a játákos neve
             return View();
         }
 
@@ -33,19 +33,33 @@ namespace AIMoba.Controllers
             string name = HttpContext.Request.Form["playerName"];
 
             GameController.currentGames.Add(roomName, new Game(roomName));
-            return RedirectToAction("JoinRoom","Home",new { roomname = roomName, name = name});
+            return RedirectToAction("JoinRoom","Home",new { roomName, name});
         }
-        //TODO refactor these functions because they are doing the same thing
+
         public IActionResult RedirectToJoinRoom()
         {
-            string roomName = HttpContext.Request.Form["room"];
-            string name = HttpContext.Request.Form["name"];
+            string roomName = HttpContext.Request.Form["roomName"];
+            string name = HttpContext.Request.Form["playerName"];
 
-            return RedirectToAction("JoinRoom", "Home", new { roomname = roomName, name = name });
+            return RedirectToAction("JoinRoom", "Home", new { roomName, name});
         }
 
         public IActionResult JoinRoom(string roomName, string name){
             ViewBag.roomName = roomName;
+            ViewBag.name = name;
+            if (Data.Lobby.lobbys.ContainsKey(roomName))
+            {
+                return View(AIMoba.Data.Lobby.lobbys[roomName]);
+            }
+            else
+            {
+                return View(null);
+            }
+        }
+
+        public IActionResult Lobby()
+        {
+            string name = HttpContext.Request.Form["name"];
             ViewBag.name = name;
             return View();
         }
@@ -54,32 +68,6 @@ namespace AIMoba.Controllers
         {
             return View();
         }
-        /*
-        //egy lépés request fogadása
-        [HttpPost]
-        public async Task<Message> MakeMove([FromBody] RequestData data)
-        { 
-
-            // lépés feldolgozása
-            bool success = currentGame.Update(data,message);
-            // visszatérési adatok létrehozása
-            if (success)
-            {
-                message.ResponsMessage = true;
-                message.Data.Add(new Move(data.position, currentGame.players[data.PlayerID].Mark));
-
-            }
-            else
-            {
-                message.ResponsMessage = false;
-            }
-            if (!message.EndOfGame&&currentGame.Steps >= currentGame.grid.Width * currentGame.grid.Height)
-            {
-                message.EndState = 0; // TODO: endofgame függvény beépítése
-
-            }
-            return message;
-        }*/
        
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

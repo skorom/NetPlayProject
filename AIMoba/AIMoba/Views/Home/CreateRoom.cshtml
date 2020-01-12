@@ -1,93 +1,30 @@
-﻿<style>
-    #back-cover {
-        width: 100vw;
-        height: 100vh;
-        background: #060606;
-        opacity: 0.3;
-        position: fixed;
-        visibility: hidden;
-        top: 0;
-        left: 0;
-        cursor: not-allowed;
-    }
-
-    #add-player-prompt {
-        visibility: hidden;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 70vw;
-        border: 3px solid black;
-        border-radius: 10px;
-        background: white;
-    }
-
-    #add-player-prompt * {
-        position: static;
-    }
-</style>
-
-<div id="back-cover"></div>
-<div id="add-player-prompt">
-    <div class="mx-auto pt-3 px-3">
-        <h3 class="text-center custom-glowing-title">Meghívtak!</h3>
-        <form asp-controller="Home" method="post">
-            <div class="form-group">
-                <label>Szia meg lettél hívva a <span id="invitingroom"></span> nevű szobába, elfogadod a meghívást?</label>
-                <input hidden id="name" name="name" type="text" value="@ViewBag.name" />
-                <input hidden id="room" name="room" type="text" value="" />
-                <div class="pt-3 clearfix">
-                    <input type="button" id="cancel-player-addition" value="Mégse" class="btn btn-danger p-2 d-inline float-right">
-                    <input type="submit" id="invite-player" asp-action="RedirectToJoinRoom" value="Elfogadás" class="btn btn-success p-2 d-inline float-right mr-3">
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
-<h1>Hozz létre egy szobát!</h1>
+﻿<link rel="stylesheet" href="~/css/custom-createroom-stiles.css">
 <form asp-controller="Home" method="post">
-    <label>Szoba neve:</label>
-    <input hidden id="playerName" name="playerName" type="text" value="@ViewBag.name" />
-    <input id="roomName" name="roomName" type="text" />
-    <input type="submit" value="katt ide" asp-action="MakeRoom" />
+    <div class="container">
+        <h1 class="large text-center bold mb-5 custom-glowing-title">Szoba létrehozása @ViewBag.name</h1>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-2"></div>
+                <div class="col-lg-6 col-md-8 col-12">
+                    <div class="form-group">
+                        <label for="room-name" class="m-0">Szoba neve:</label>
+                        <input type="text" class="form-control my-3" id="roomName" name="roomName" placeholder="Szoba név" required>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-2"></div>
+            </div>
+            <input hidden id="playerName" name="playerName" type="text" value="@ViewBag.name" />
+            <div class="row text-center pt-5">
+                <div class="col-sm-3"></div>
+                <div class="col-sm-3 col-12 mr-3">
+                    <input type="submit" class="btn btn-primary p-2 mb-2 mw-75" value="Szoba létrehozása" asp-action="MakeRoom" />
+                </div>
+                <div class="col-sm-3 col-12">
+                    <a href="./index.html" class="btn btn-danger p-2 mb-2 mw-75">Vissza</a>
+                </div>
+                <div class="col-sm-3"></div>
+            </div>
+        </div>
+    </div>
 </form>
 
-
-
-<script>
-
-    function toggleLayers() {
-        let cover = document.getElementById("back-cover").style.visibility;
-
-        document.getElementById("add-player-prompt").style.visibility =
-            (cover == "visible") ? "hidden" : "visible";
-
-        document.getElementById("back-cover").style.visibility =
-        (cover == "visible") ? "hidden" : "visible";
-    }
-
-    let connection = new signalR.HubConnectionBuilder()
-        .withUrl("/lobbyHub")
-        .configureLogging(signalR.LogLevel.Information)
-        .build();
-
-    connection.start().then(function () {
-        console.log("feliratkozas");
-        connection.invoke("Subscribe", document.getElementById("name").value).catch(function (err) {
-            return console.error(err.toString());
-        });
-    }).catch(function (err) {
-
-        return console.error(err.toString());
-    });
-
-    connection.on("Invited", function (roomname) {
-        document.getElementById("invitingroom").innerText = roomname;
-        document.getElementById("room").value = roomname;
-        toggleLayers();
-    });
-
-</script>
-<!--a href="Url.Action("MakeRoom","Home")">katt ide</a>-->
