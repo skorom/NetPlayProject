@@ -240,22 +240,13 @@ namespace Logika
                 {
                     if (valuesTable[x, y] == tempMax)
                     {                        
-                        bestValues.Add(new Cells { value = tempMax, x = x, y = y });
-                        Console.WriteLine(bestValues[bestValues.Count-1].value + " X: " + bestValues[bestValues.Count-1].x + " Y: " + bestValues[bestValues.Count-1].y);
+                        bestValues.Add(new Cells { value = tempMax, x = x, y = y });                        
                     }
                 }
-            }
-            Console.WriteLine("bestValues:");
-            Console.WriteLine(bestValues[bestValues.Count - 1].value+" "+bestValues[bestValues.Count-1].x + " " +bestValues[bestValues.Count-1].y);
-            for (int i = 0; i < bestValues.Count; i++)
-            {
-                Console.WriteLine(bestValues[i].value+ " X: "+bestValues[i].x + " Y: " + bestValues[i].y);
-            }
-            random = rnd.Next(0, bestValues.Count-1);
-            Console.WriteLine("random: "+random);           
+            }            
+            random = rnd.Next(0, bestValues.Count-1);       
             aix = bestValues[random].x;
             aiy = bestValues[random].y;
-            Console.ReadKey();
 
         }
 
@@ -263,9 +254,9 @@ namespace Logika
         {
             int P1cellValue = 0, P2cellValue = 0, P3cellValue = 0, AIcellValue = 0;
             FieldState checkedState = FieldState.None;
-            for (int x = 1; x < table.Height-1; x++)
+            for (int x = 1; x < table.Height - 1; x++)
             {
-                for (int y = 1; y < table.Width-1; y++)
+                for (int y = 1; y < table.Width - 1; y++)
                 {
                     if (table[x, y] == FieldState.None)
                     {
@@ -289,7 +280,7 @@ namespace Logika
                                     valuesTable[x, y] = P1cellValue;
                                 }
 
-                                
+
                                 break;
                             case 3:
                                 checkedState = FieldState.PlayerOne;
@@ -298,8 +289,8 @@ namespace Logika
                                 P2cellValue = cellValue(table, currentX, currentY, checkedState);
                                 checkedState = FieldState.PlayerThree;
                                 AIcellValue = cellValue(table, currentX, currentY, checkedState);
-                                
-                                int tempMax=0;
+
+                                int tempMax = 0;
 
                                 tempArray[0] = P1cellValue;
                                 tempArray[1] = P2cellValue;
@@ -310,10 +301,10 @@ namespace Logika
                                     if (tempArray[i] >= tempMax)
                                     {
                                         tempMax = tempArray[i];
-                                    }    
+                                    }
                                 }
                                 valuesTable[x, y] = tempMax;
-                                                                                                
+
                                 break;
                             case 4:
                                 checkedState = FieldState.PlayerOne;
@@ -342,21 +333,12 @@ namespace Logika
                                 valuesTable[x, y] = tempMax;
 
                                 break;
-                        }                                                       
+                        }
                     }
                 }
             }
-            for(int i = 0; i < table.Height; i++)
-            {
-                for (int j = 0; j < table.Width; j++)
-                {
-                    Console.Write(valuesTable[i,j]);
-                }
-                Console.WriteLine();
-            }
-            Console.ReadKey();
         }
-        
+           
         static int cellValue(GridModel table, int currentX, int currentY, FieldState checkedState)
         {
             int[] directionsX = { 0, 0, 1, -1, -1, 1, 1, -1 };
