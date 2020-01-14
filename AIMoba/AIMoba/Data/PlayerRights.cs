@@ -9,6 +9,7 @@ namespace AIMoba.Data
     {
         Tulajdonos,
         Játékos,
+        Robot,
         Néző
     }
 }

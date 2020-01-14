@@ -1,7 +1,7 @@
 ﻿<link rel="stylesheet" href="~/css/custom-createroom-stiles.css">
 <form asp-controller="Home" method="post">
     <div class="container">
-        <h1 class="large text-center bold mb-5 custom-glowing-title">Szoba létrehozása @ViewBag.name</h1>
+        <h1 class="large text-center bold mb-5 custom-glowing-title">Hozd létre a szobádat!</h1>
         <div class="container">
             <div class="row">
                 <div class="col-lg-3 col-md-2"></div>
@@ -20,7 +20,7 @@
                     <input type="submit" class="btn btn-primary p-2 mb-2 mw-75" value="Szoba létrehozása" asp-action="MakeRoom" />
                 </div>
                 <div class="col-sm-3 col-12">
-                    <a href="./index.html" class="btn btn-danger p-2 mb-2 mw-75">Vissza</a>
+                    <a href="@Url.Action("Lobby", "Home", new {roomName = ViewBag.name})" class="btn btn-danger p-2 mb-2 mw-75">Vissza</a>
                 </div>
                 <div class="col-sm-3"></div>
             </div>

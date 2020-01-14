@@ -9,14 +9,14 @@ namespace AIMoba.Data
     {
         public string ID { get; set; }
         // a játékban eddig megtett lépések száma
-        public int Steps { get; set; } = 0;
+        private int Steps { get; set; } = 0;
         // a tábla melyen a játékosok játszanak
-        public GridModel grid { get; set; }
+        private GridModel grid { get; set; }
 
         public FieldState LastMark { get; private set; }
 
         // a játékosokat, robotokat is beleértve tárolja 
-        public Dictionary<string, IPlayer> players = new Dictionary<string, IPlayer>();
+        private Dictionary<string, IPlayer> players = new Dictionary<string, IPlayer>();
         public Game(string id)
         {
             grid = new GridModel();
@@ -28,28 +28,35 @@ namespace AIMoba.Data
         {
             players.Add(ID, new Player(MapNumToState(players.Count+1),ID));
 
-            int turnIndex = 0;
-
-            foreach(Player p in players.Values)
-            {
-                if(p.IsComputer == false)
-                {
-                    p.Turn = turnIndex++;
-                }
-            }
-            foreach (Player p in players.Values)
-            {
-                if (p.IsComputer == true)
-                {
-                    p.Turn = turnIndex++;
-                }
-            }
+            CalculateTurns();
 
         }
         
         public void AddRobot()
         {
-            players.Add(""+players.Count , new Robot(MapNumToState(players.Count + 1)));
+            string id = players.Count.ToString();
+            players.Add(id , new Robot(MapNumToState(players.Count + 1),id));
+
+            CalculateTurns();
+        }
+
+        private void CalculateTurns()
+        {
+            int turnIndex = 0;
+            foreach (var p in players.Values)
+            {
+                if (!p.IsComputer)
+                {
+                    p.Turn = turnIndex++;
+                }
+            }
+            foreach (var p in players.Values)
+            {
+                if (p.IsComputer)
+                {
+                    p.Turn = turnIndex++;
+                }
+            }
         }
 
         // sorszám alapján keresi meg a játékost

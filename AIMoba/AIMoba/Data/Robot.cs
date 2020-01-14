@@ -11,6 +11,19 @@ public class Robot : IPlayer
 
     public int Turn { get; set; }
 
+    private static int robots = 0;
+
+    public static string GetNewName()
+    {
+        string name = "Robot" + robots.ToString();
+        ++robots;
+        if(robots == int.MaxValue)
+        {
+            robots = 0;
+        }
+        return name;
+    }
+
     public Robot(FieldState mark, string id = "0", int diff = 1)
     {
         this.Mark = mark;

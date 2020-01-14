@@ -1,64 +1,41 @@
 body {
-    background: black;
+    background: #47a2dd;
 }
 
 .custom-glowing-title {
     font-weight: bold;
-    color: white;
-    text-shadow: 0 0 .2vw white, 0 0 .4vw white, 0 0 .8vw #ff0080, 0 0 1.6vw #ff0080, 0 0 2vw #ff0080;
+    text-shadow: .1rem .2rem .05rem black;
+    color: #001aeb;
     text-transform: uppercase;
-}
-
-.btn.btn-info {
-    background: #0F0F0F;
-    color: #ff0080;
-    text-shadow: 0 0 1vw #ff0080;
-    border: 1px solid #cf0067;
-    outline: none !important;
-}
-
-    .btn.btn-info:hover, .btn.btn-info:focus {
-        background: #0A0A0A;
-        color: #ff0080;
-        text-shadow: 0 0 .2vw grey, 0 0 .5vw #ff0080, 0 0 .6vw #ff0080;
-        border: 1px solid #ff0080;
-        box-shadow: 0 0 .2vw grey, 0 0 .5vw #ff0080, 0 0 .6vw #ff0080;
-        outline: none !important;
-    }
-
-    .btn.btn-info:active {
-        background: black !important;
-        color: #ff0080 !important;
-        text-shadow: 0 0 .2vw grey, 0 0 .5vw #ff0080, 0 0 .6vw #ff0080 !important;
-        border: 1px solid #cf0067 !important;
-        outline: none !important;
-        box-shadow: none !important;
-    }
-
-#back-cover {
-    width: 100vw;
-    height: 100vh;
-    background: #060606;
-    opacity: 0.3;
-    position: fixed;
-    visibility: hidden;
-    top: 0;
-    left: 0;
-    cursor: not-allowed;
 }
 
 #add-player-prompt {
     visibility: hidden;
+    z-index: 1001;
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 70vw;
+    min-height: 20vh;
     border: 3px solid black;
     border-radius: 10px;
-    background: white;
+    background: #aaa1a1;
+    margin: 1rem;
 }
 
-#add-player-prompt * {
-    position: static;
+    #add-player-prompt > * {
+        margin: 1rem;
+    }
+
+#back-cover {
+    visibility: hidden;
+    z-index: 1000;
+    width: 100vw;
+    height: 100vh;
+    background: #060606;
+    opacity: 0.8;
+    position: fixed;
+    top: 0;
+    left: 0;
 }

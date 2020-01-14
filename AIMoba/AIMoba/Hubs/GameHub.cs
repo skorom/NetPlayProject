@@ -39,7 +39,7 @@ namespace AIMoba.Hubs
                             {
                                 Position robotMove = current.MoveRobot();
 
-                                await Clients.Group(roomname).SendAsync("WaitForMove", moveTo, current.LastMark);
+                                await Clients.Group(roomname).SendAsync("WaitForMove", robotMove, current.LastMark);
 
                                 if (current.isGameOver(robotMove))
                                 {

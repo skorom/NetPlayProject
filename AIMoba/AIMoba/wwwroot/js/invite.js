@@ -55,6 +55,11 @@ function SendInvite() {
         .catch((err) => console.error(err.toString()));
 }
 
+function addRobotToRoom() {
+    let roomName = document.getElementById('roomName').innerText;
+    connection.invoke("AddRobot", roomName).catch((err) => console.error(err.toString()));
+}
+
 // Kész állapotra váltás
 document.getElementById("readyButton").addEventListener("click", function (event) {
     let myName = document.getElementById("name").innerText;

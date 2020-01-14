@@ -32,6 +32,7 @@ class Record {
 
         // A kliensoldali táblázatban megjelenő elem
         r.element = element
+        r.rebuild();
 
         return r;
     }
@@ -45,7 +46,7 @@ class Record {
         <td>${this.role}</td>
         <td>${this.status}</td>
         <td id="${this.id}" class="mx-0 px-0 clearfix">
-            <button class="float-right btn btn-danger mr-2" onClick="removePlayer(${this.id})" ><i class="fa fa-times"></i></button>
+            <button class="d-flex justify-content-center align-items-center btn btn-danger h-auto" onClick="removePlayer(${this.id})" >X</button>
         </td>
         `;
     } 

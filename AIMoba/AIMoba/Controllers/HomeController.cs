@@ -57,11 +57,16 @@ namespace AIMoba.Controllers
             }
         }
 
-        public IActionResult Lobby()
+        public IActionResult Lobby(string roomName)
+        {
+            ViewBag.name = roomName;
+            return View();
+        }
+        public IActionResult RedirectToLobby()
         {
             string name = HttpContext.Request.Form["name"];
-            ViewBag.name = name;
-            return View();
+
+            return RedirectToAction("Lobby", "Home", new { roomName = name });
         }
 
         public IActionResult FakeAutentication()

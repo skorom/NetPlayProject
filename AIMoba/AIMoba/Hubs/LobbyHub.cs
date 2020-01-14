@@ -35,21 +35,27 @@ namespace AIMoba.Hubs
         public async Task InvitePlayer(string roomName, string name)
         {
             await Task.Run(async () => {
-                lock (_lock)
-                {
+               
                     if (nameToConnection.ContainsKey(name))
                     {
-                        // Ha a meghívott felhasználó rendelkezik szever kapcsolattal
-                        if (Lobby.invitations.ContainsKey(name))  // ha már meghívták valahová
+                        lock (_lock)
                         {
-                            Lobby.invitations[name].Add(roomName);
-                        }
-                        else // Ha ez az első hely ahová meghívták
-                        {
-                            Lobby.invitations.Add(name, new List<string>() { roomName });
+                            // Ha a meghívott felhasználó rendelkezik szever kapcsolattal
+                            if (Lobby.invitations.ContainsKey(name))  // ha már meghívták valahová
+                            {
+                                Lobby.invitations[name].Add(roomName);
+                            }
+                            else // Ha ez az első hely ahová meghívták
+                            {
+                                Lobby.invitations.Add(name, new List<string>() { roomName });
+                            }
                         }
                     }
-                }
+                    else
+                    {
+                        await Clients.Caller.SendAsync("Message", name+" nevű játékos jelenleg nincs online");
+                    }
+                
 
                 if (nameToConnection.ContainsKey(name))
                 {
@@ -67,6 +73,27 @@ namespace AIMoba.Hubs
                     
                 }
             
+            });
+        }
+
+        public async Task AddRobot(string roomName)
+        {
+            await Task.Run( async () =>
+            {
+                if (GameController.currentGames.ContainsKey(roomName))
+                {
+                    GameController.currentGames[roomName].AddRobot();
+                    PlayerModel robot = new PlayerModel()
+                    {
+                        Name = Robot.GetNewName(),
+                        Role = PlayerRights.Robot,
+                        Score = 999,
+                        State = PlayerState.Kész
+                    };
+
+                    Lobby.lobbys[roomName].Add(robot);
+                    await Clients.Group(roomName).SendAsync("AddPlayer", robot.Stringify()); ;
+                }
             });
         }
 
@@ -158,7 +185,7 @@ namespace AIMoba.Hubs
                 }
                 else
                 {
-                    await Clients.Caller.SendAsync("Message", "Mindenkinek késszen kell lennie a játék megkezdéséhez");
+                    await Clients.Caller.SendAsync("Message", "Mindenkinek készen kell lennie a játék megkezdéséhez");
                 }
             }
         }

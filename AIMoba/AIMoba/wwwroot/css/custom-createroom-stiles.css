@@ -1,124 +1,25 @@
 body {
-    background: black;
+    background: #47a2dd;
 }
 
 label, td {
-    color: white;
+    color: black;
 }
 
 th {
-    color: white;
     font-weight: bold;
-    text-shadow: 0 0 .8vw white;
 }
 
 .custom-glowing-title {
     font-weight: bold;
-    color: white;
-    text-shadow: 0 0 .2vw white, 0 0 .4vw white, 0 0 .8vw #ff0080, 0 0 1.6vw #ff0080, 0 0 2vw #ff0080;
+    text-shadow: .1rem .2rem .05rem black;
+    color: #001aeb;
     text-transform: uppercase;
 }
 
+
 .custom-label {
-    color: white;
+    color: black;
     font-weight: bold;
-    text-shadow: 0 0 .8vw white;
     font-size: large;
 }
-
-.form-control {
-    outline: none;
-    background: #121212;
-    color: white !important;
-    border: 1px solid #ff0080;
-    /*box-shadow: 0 0 .4vw white, 0 0 .5vw #ff0080, 0 0 .8vw #ff0080;*/
-}
-
-    .form-control::placeholder {
-        color: white;
-    }
-
-    .form-control:hover, .form-control:active, .form-control:focus {
-        background: #0A0A0A;
-        border: 1px solid white;
-        box-shadow: 0 0 .6vw white, 0 0 1.1vw #ff0080, 0 0 1.5vw #ff0080;
-        outline: none;
-    }
-
-.btn.btn-info {
-    background: #0F0F0F;
-    color: #ff0080;
-    text-shadow: 0 0 1vw #ff0080;
-    border: 1px solid #cf0067;
-    outline: none !important;
-}
-
-    .btn.btn-info:hover, .btn.btn-info:focus {
-        background: #0A0A0A;
-        color: #ff0080;
-        text-shadow: 0 0 .2vw grey, 0 0 .5vw #ff0080, 0 0 .6vw #ff0080;
-        border: 1px solid #ff0080;
-        box-shadow: 0 0 .2vw grey, 0 0 .5vw #ff0080, 0 0 .6vw #ff0080;
-        outline: none !important;
-    }
-
-    .btn.btn-info:active {
-        background: black !important;
-        color: #ff0080 !important;
-        text-shadow: 0 0 .2vw grey, 0 0 .5vw #ff0080, 0 0 .6vw #ff0080 !important;
-        border: 1px solid #cf0067 !important;
-        outline: none !important;
-        box-shadow: none !important;
-    }
-
-.btn.btn-success {
-    background: #0F0F0F;
-    color: #37ff14;
-    text-shadow: 0 0 1vw #37ff14;
-    border: 1px solid #32ce17;
-    outline: none !important;
-}
-
-    .btn.btn-success:hover, .btn.btn-success:focus {
-        background: #0A0A0A;
-        color: #37ff14;
-        text-shadow: 0 0 .2vw grey, 0 0 .5vw #37ff14, 0 0 .6vw #37ff14;
-        border: 1px solid #37ff14;
-        box-shadow: 0 0 .2vw grey, 0 0 .5vw #37ff14, 0 0 .6vw #37ff14;
-        outline: none !important;
-    }
-
-    .btn.btn-success:active {
-        background: black !important;
-        color: #37ff14 !important;
-        text-shadow: 0 0 .2vw grey, 0 0 .5vw #37ff14, 0 0 .6vw #37ff14 !important;
-        border: 1px solid #32ce17 !important;
-        outline: none !important;
-        box-shadow: none !important;
-    }
-
-.btn.btn-danger {
-    background: #0F0F0F;
-    color: #CE0000;
-    text-shadow: 0 0 .2vw #CE0000, 0 0 .3vw grey, 0 0 .4vw #CE0000;
-    border: 1.3px solid #A20000;
-    outline: none !important;
-}
-
-    .btn.btn-danger:hover, .btn.btn-danger:focus {
-        background: #0A0A0A;
-        color: #CE0000;
-        text-shadow: 0 0 .2vw grey, 0 0 .5vw #CE0000, 0 0 .6vw #CE0000;
-        border: 1px solid #CE0000;
-        box-shadow: 0 0 .2vw grey, 0 0 .5vw #CE0000, 0 0 .6vw #CE0000;
-        outline: none !important;
-    }
-
-    .btn.btn-danger:active {
-        background: black !important;
-        color: #CE0000 !important;
-        text-shadow: 0 0 .2vw grey, 0 0 .5vw #CE0000, 0 0 .6vw #CE0000 !important;
-        border: 1px solid #A20000 !important;
-        outline: none !important;
-        box-shadow: none !important;
-    }

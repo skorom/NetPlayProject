@@ -20,6 +20,11 @@ let body = document.querySelector("#players").querySelector("tbody");
      if (e.keyCode == 13) {     // 13 as az enter karakterkódja
         Invite();
     }
+ });
+    
+// robot hozzáadása frontenden
+document.querySelector("#add-robot").addEventListener('click', e => {
+    addRobotToRoom();
 });
 
 // a plusz gombra kattintás lekezelése
