@@ -365,6 +365,14 @@ namespace Logika
                     }
                     sum = 0;
                 }
+                if (i == 7)
+                {
+                    if (sum > maxValue)
+                    {
+                        maxValue = sum;
+                    }
+                    sum = 0;
+                }
 
             }
             return maxValue;
