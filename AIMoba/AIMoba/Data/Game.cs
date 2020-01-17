@@ -7,6 +7,7 @@ namespace AIMoba.Data
 {
     public class Game
     {
+        private object _lock = new object();
         public string ID { get; set; }
         // a játékban eddig megtett lépések száma
         private int Steps { get; set; } = 0;
@@ -26,16 +27,21 @@ namespace AIMoba.Data
         // új játékos hozzáadása
         public void AddPlayer(string ID)
         {
-            players.Add(ID, new Player(MapNumToState(players.Count+1),ID));
+            lock (_lock)
+            {
+                players.Add(ID, new Player(MapNumToState(players.Count+1),ID));
+            }
 
             CalculateTurns();
-
         }
         
         public void AddRobot()
         {
             string id = players.Count.ToString();
-            players.Add(id , new Robot(MapNumToState(players.Count + 1),id));
+            lock (_lock)
+            {
+                players.Add(id , new Robot(MapNumToState(players.Count + 1),id));
+            }
 
             CalculateTurns();
         }
