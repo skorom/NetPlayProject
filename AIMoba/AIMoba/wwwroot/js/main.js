@@ -37,30 +37,6 @@ window.addEventListener('DOMContentLoaded' ,() => {
     setup();
     lastTimestamp = 0;
 
-
-    canvas.addEventListener('click', (e) => {
-        let mousepos = getMousePos(e);
-        let iPos = Math.floor(mousepos.y / cellSize);
-        let jPos = Math.floor(mousepos.x / cellSize);
-        console.log(iPos, jPos);
-
-        let params = window.location.pathname.split('/').filter(x => x.length != 0);
-        let gameID = parseInt(params[params.length - 2]);
-        let playerID = parseInt(params[params.length - 1]);
-        console.log(gameID, playerID);
-        fetch('../../makemove', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ GameID: gameID, PlayerID: playerID, Position: { IPos: iPos, JPos: jPos} })
-        }).then((res) => {
-            console.log(res);
-            return res.json();
-        }).then(handleResponse);
-
-    });
-
     draw(0);
     //window.requestAnimationFrame(draw);
 });
@@ -115,8 +91,6 @@ function setup(){
     // height = canvas magassága / cellaSpaceing    vagy  cellaSpaceing = canvasSzélessége / height
     amobaGrid = new Grid(cols, rows, cellSize, 6);
     
-    
-    // fillWithDummyData(amobaGrid.fields, amobaGrid.width, amobaGrid.height, 5);
 }
 
 // folyamatos frissítés
@@ -128,13 +102,4 @@ function draw(timestamp){
     amobaGrid.show(context);
 
     //window.requestAnimationFrame(draw);
-}
-
- // TODO: kitörölni amikor az AImoba fő projectjébe kerül ez a kód
-function fillWithDummyData(fields,w,h, range){
-    for(let i = 0; i < h; i++){
-        for(let j = 0; j < w; j++){
-            fields[i][j] = Math.floor(Math.random()*range) 
-        }
-    }
 }

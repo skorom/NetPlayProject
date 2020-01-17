@@ -1,0 +1,25 @@
+body {
+    background: #47a2dd;
+}
+
+label, td {
+    color: black;
+}
+
+th {
+    font-weight: bold;
+}
+
+.custom-glowing-title {
+    font-weight: bold;
+    text-shadow: .1rem .2rem .05rem black;
+    color: #001aeb;
+    text-transform: uppercase;
+}
+
+
+.custom-label {
+    color: black;
+    font-weight: bold;
+    font-size: large;
+}

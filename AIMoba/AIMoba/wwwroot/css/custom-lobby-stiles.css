@@ -1,0 +1,41 @@
+body {
+    background: #47a2dd;
+}
+
+.custom-glowing-title {
+    font-weight: bold;
+    text-shadow: .1rem .2rem .05rem black;
+    color: #001aeb;
+    text-transform: uppercase;
+}
+
+#add-player-prompt {
+    visibility: hidden;
+    z-index: 1001;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70vw;
+    min-height: 20vh;
+    border: 3px solid black;
+    border-radius: 10px;
+    background: #aaa1a1;
+    margin: 1rem;
+}
+
+    #add-player-prompt > * {
+        margin: 1rem;
+    }
+
+#back-cover {
+    visibility: hidden;
+    z-index: 1000;
+    width: 100vw;
+    height: 100vh;
+    background: #060606;
+    opacity: 0.8;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
