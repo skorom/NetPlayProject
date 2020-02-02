@@ -14,7 +14,7 @@ namespace AIMoba.Models
         public PlayerState State { get; set; }
 
         public PlayerModelString Stringify()
-        {
+        {         
             return new PlayerModelString()
             {
                 Name = Name,

@@ -1,0 +1,34 @@
+﻿<link type="text/css" rel="stylesheet" href="~/css/design.css" />
+<form asp-controller="Home">
+   <div class="p-5"></div>
+    <div class="row mt-3">
+        <div class="col-3"></div>
+        <div class="col-6">
+            <h1 class="title">Jelentkezz be!</h1>
+            <div class="mt-5">
+                <div class="form-group w-100">
+                    <label for="Username" class="mb-3">Felhasználónév</label>
+                    <input type="text" id="name" name="name" class="form-control w-100" />
+                </div>
+                <div class="form-group">
+                    <label for="password" class="my-3">Jeszó</label>
+                    <input type="password" id="password" name="password" class="form-control w-100" />
+                </div>
+            </div>
+        </div>
+        <div class="col-3"></div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-3"></div>
+        <div class="col-3">
+            <input class="w-100 btn btn-lg btn-block mx-0" type="submit" value="Bejelentkezés" asp-action="RedirectToLobby"/>
+        </div>
+        <div class="col-3">
+            <form action="./netplay_register.html">
+                <button class="w-100 btn btn-lg btn-block mx-0" type="submit">Regisztráció</button>
+            </form>
+        </div>
+        <div class="col-3"></div>
+    </div>
+</form>
+

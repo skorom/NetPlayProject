@@ -9,6 +9,7 @@ using AIMoba.Models;
 using AIMoba.Data;
 using AIMoba.Logic;
 using AIMoba.Hubs;
+using Microsoft.EntityFrameworkCore;
 
 namespace AIMoba.Controllers
 {
@@ -16,8 +17,10 @@ namespace AIMoba.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
+        private UserDAOService UserDAOService = new UserDAOService();
         public HomeController(ILogger<HomeController> logger)
         {
+            UserDAOService.Register("Szilárdó", "12345");
             _logger = logger;
         }
 
@@ -65,11 +68,38 @@ namespace AIMoba.Controllers
         public IActionResult RedirectToLobby()
         {
             string name = HttpContext.Request.Form["name"];
+            string password = HttpContext.Request.Form["password"];
+            Console.WriteLine(password);
+            if (UserDAOService.Authenticate(name, password))
+            {
+                return RedirectToAction("Lobby", "Home", new { roomName = name });
+            }
+            else {
+                return RedirectToAction("Login", "Home");
+            }
+        }
+        
+        public IActionResult FakeAutentication()
+        {
+            using (var db = new UserContext())
+            {
+                var user = new User() { Name = "lacika", Password = "almafa", Score = 10 };
+                db.Users.Add(user);
+                db.SaveChanges();
+            }
+            using (var db = new UserContext())
+            {
+                var users = db.Users
+                    .Where(u=>u.Name == "lacika")
+                    .OrderBy(u => u.Name)
+                    .ToList();
+                users.ForEach(u => Console.WriteLine(u.ToString()));
+            }
 
-            return RedirectToAction("Lobby", "Home", new { roomName = name });
+            return View();
         }
 
-        public IActionResult FakeAutentication()
+        public IActionResult Login()
         {
             return View();
         }
