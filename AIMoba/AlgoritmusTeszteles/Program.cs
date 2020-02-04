@@ -351,7 +351,7 @@ namespace Logika
             {                
                 sumX = currentX;
                 sumY = currentY;
-                while(!(sumY == table.Width || sumX == table.Height || table[sumX+directionsX[i], sumY+directionsY[i]] != checkedState || sum == 5))
+                while(!(sumX==0 || sumY==0 ||sumY == table.Width || sumX == table.Height || table[sumX+directionsX[i], sumY+directionsY[i]] != checkedState || sum == 5))
                 {
                     sum++;
                     sumX += directionsX[i];
