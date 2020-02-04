@@ -249,96 +249,39 @@ namespace Logika
             aiy = bestValues[random].y;
 
         }
-
+        //A getValues() függvény minden üres cellának ad egy értéket.
+        
         static void getValues(GridModel table, int[,] valuesTable, int currentX, int currentY, int players)
         {
-            int P1cellValue = 0, P2cellValue = 0, P3cellValue = 0, AIcellValue = 0;
+            int tempValue=0, tempMaxValue=0;
             FieldState checkedState = FieldState.None;
+            FieldState[] playerFieldStates = {FieldState.PlayerOne, FieldState.PlayerTwo, FieldState.PlayerThree, FieldState.PlayerFour};
+
             for (int x = 1; x < table.Height - 1; x++)
             {
                 for (int y = 1; y < table.Width - 1; y++)
                 {
                     if (table[x, y] == FieldState.None)
                     {
-                        currentX = x;
-                        currentY = y;
-                        int[] tempArray = new int[players];
-                        switch (players)
+                        tempMaxValue = 0;
+                        for (int i = 0; i < players; i++)
                         {
-                            case 2:
-                                checkedState = FieldState.PlayerOne;
-                                P1cellValue = cellValue(table, currentX, currentY, checkedState);
-                                checkedState = FieldState.PlayerTwo;
-                                AIcellValue = cellValue(table, currentX, currentY, checkedState);
+                            currentX = x;
+                            currentY = y;
+                            checkedState=playerFieldStates[i];
+                            tempValue=cellValue(table,currentX,currentY,checkedState);
 
-                                if (AIcellValue >= P1cellValue)
-                                {
-                                    valuesTable[x, y] = AIcellValue;
-                                }
-                                else
-                                {
-                                    valuesTable[x, y] = P1cellValue;
-                                }
-
-
-                                break;
-                            case 3:
-                                checkedState = FieldState.PlayerOne;
-                                P1cellValue = cellValue(table, currentX, currentY, checkedState);
-                                checkedState = FieldState.PlayerTwo;
-                                P2cellValue = cellValue(table, currentX, currentY, checkedState);
-                                checkedState = FieldState.PlayerThree;
-                                AIcellValue = cellValue(table, currentX, currentY, checkedState);
-
-                                int tempMax = 0;
-
-                                tempArray[0] = P1cellValue;
-                                tempArray[1] = P2cellValue;
-                                tempArray[2] = AIcellValue;
-
-                                for (int i = 0; i < players; i++)
-                                {
-                                    if (tempArray[i] >= tempMax)
-                                    {
-                                        tempMax = tempArray[i];
-                                    }
-                                }
-                                valuesTable[x, y] = tempMax;
-
-                                break;
-                            case 4:
-                                checkedState = FieldState.PlayerOne;
-                                P1cellValue = cellValue(table, currentX, currentY, checkedState);
-                                checkedState = FieldState.PlayerTwo;
-                                P2cellValue = cellValue(table, currentX, currentY, checkedState);
-                                checkedState = FieldState.PlayerThree;
-                                P3cellValue = cellValue(table, currentX, currentY, checkedState);
-                                checkedState = FieldState.PlayerFour;
-                                AIcellValue = cellValue(table, currentX, currentY, checkedState);
-
-                                tempMax = 0;
-
-                                tempArray[0] = P1cellValue;
-                                tempArray[1] = P2cellValue;
-                                tempArray[2] = P3cellValue;
-                                tempArray[3] = AIcellValue;
-
-                                for (int i = 0; i < players; i++)
-                                {
-                                    if (tempArray[i] >= tempMax)
-                                    {
-                                        tempMax = tempArray[i];
-                                    }
-                                }
-                                valuesTable[x, y] = tempMax;
-
-                                break;
+                            if(tempValue>tempMaxValue)
+                            {
+                                tempMaxValue=tempValue;
+                            }
                         }
+                        valuesTable[x,y]=tempMaxValue;
                     }
                 }
             }
         }
-           
+        //A cellValue() függvény egy cellának adja meg az értékét.
         static int cellValue(GridModel table, int currentX, int currentY, FieldState checkedState)
         {
             int[] directionsX = { 0, 0, 1, -1, -1, 1, 1, -1 };
