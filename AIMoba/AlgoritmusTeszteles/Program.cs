@@ -214,15 +214,24 @@ namespace Logika
        */
         static void AI(GridModel table, FieldState CPU, ref int aix, ref int aiy, int players)
         {
-            int currentX = 0, currentY = 0;
             int[,] valuesTable = new int[table.Height, table.Width];
 
-            getValues(table, valuesTable, currentX, currentY, players);
+            getValues(table, valuesTable, players);
 
             int tempMax = 0;
             List<Cells> bestValues = new List<Cells>();
             Random rnd = new Random();
             int random=0;
+
+            for (int i = 0; i < table.Height; i++)
+            {
+                for (int j = 0; j < table.Width; j++)
+                {
+                    Console.Write(valuesTable[i, j]);
+                }
+                Console.WriteLine();
+            }
+            Console.ReadKey();
 
             for (int x = 0; x < table.Height; x++)
             {
@@ -251,15 +260,16 @@ namespace Logika
         }
         //A getValues() függvény minden üres cellának ad egy értéket.
         
-        static void getValues(GridModel table, int[,] valuesTable, int currentX, int currentY, int players)
+        static void getValues(GridModel table, int[,] valuesTable, int players)
         {
             int tempValue=0, tempMaxValue=0;
+            int currentX = 0, currentY = 0;
             FieldState checkedState = FieldState.None;
             FieldState[] playerFieldStates = {FieldState.PlayerOne, FieldState.PlayerTwo, FieldState.PlayerThree, FieldState.PlayerFour};
 
-            for (int x = 1; x < table.Height - 1; x++)
+            for (int x = 0; x < table.Height - 1; x++)
             {
-                for (int y = 1; y < table.Width - 1; y++)
+                for (int y = 0; y < table.Width - 1; y++)
                 {
                     if (table[x, y] == FieldState.None)
                     {
@@ -294,11 +304,12 @@ namespace Logika
             {                
                 sumX = currentX;
                 sumY = currentY;
-                while(!(sumX==0 || sumY==0 ||sumY == table.Width || sumX == table.Height || table[sumX+directionsX[i], sumY+directionsY[i]] != checkedState || sum == 5))
+                while(!(sumY == table.Width-1 || sumX == table.Height-1 || table[sumX+directionsX[i], sumY+directionsY[i]] != checkedState || sum == 5))
                 {
                     sum++;
                     sumX += directionsX[i];
                     sumY += directionsY[i];
+                    Console.WriteLine(currentX+" "+currentY+" "+sumX+" "+sumY);
                 }
                 if (i % 2 == 0)
                 {
@@ -318,6 +329,7 @@ namespace Logika
                 }
 
             }
+
             return maxValue;
         }
         
