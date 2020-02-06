@@ -53,7 +53,7 @@ namespace AIMoba.Hubs
                     }
                     else
                     {
-                        await Clients.Caller.SendAsync("Message", name+" nevű játékos jelenleg nincs online");
+                        await Clients.Caller.SendAsync("Message","Figyelem!", "warning", name+" nevű játékos jelenleg nincs online");
                     }
                 
 
@@ -185,7 +185,7 @@ namespace AIMoba.Hubs
                 }
                 else
                 {
-                    await Clients.Caller.SendAsync("Message", "Mindenkinek készen kell lennie a játék megkezdéséhez");
+                    await Clients.Caller.SendAsync("Message","Hiba!", "error", "Mindenkinek készen kell lennie a játék megkezdéséhez!");
                 }
             }
         }
