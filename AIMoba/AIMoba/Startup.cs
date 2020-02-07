@@ -52,9 +52,10 @@ namespace AIMoba
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=FakeAutentication}/{roomName?}/{name?}");
+                    pattern: "{controller=Home}/{action=Login}/{roomName?}/{name?}");
                 endpoints.MapHub<GameHub>("/gameHub");
                 endpoints.MapHub<LobbyHub>("/lobbyHub");
+
             });
         }
     }
