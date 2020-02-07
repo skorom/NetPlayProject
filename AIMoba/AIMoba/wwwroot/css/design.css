@@ -53,7 +53,7 @@ input.form-control:focus {
   }
 }
 
-button {
+button, input[type="submit"] {
   position: relative;
   display: inline-block;
   background-color: black;
@@ -70,15 +70,15 @@ button {
   border-radius: 20px;
 }
 
-button:hover {
-  background-color: #03e9f4;
-  color: #050801;
-  box-shadow: 0 0 10px #03e8f48e, 0 0 25px #03e8f48e;
-}
+    button:hover, input[type="submit"]:hover {
+        background-color: #03e9f4;
+        color: #050801;
+        box-shadow: 0 0 10px #03e8f48e, 0 0 25px #03e8f48e;
+    }
 
-button.form-control:focus {
-  background: #005f8b !important;
-  border: 2px solid #005f8b !important;
-  outline: 0px;
-  box-shadow: 0 0 5px #fff, 0 0 15px #00acfc, 0 0 20px #00acfc, 0 0 40px #00acfc;
-}
+    button.form-control:focus, input[type="submit"]:focus {
+        background: #005f8b !important;
+        border: 2px solid #005f8b !important;
+        outline: 0px;
+        box-shadow: 0 0 5px #fff, 0 0 15px #00acfc, 0 0 20px #00acfc, 0 0 40px #00acfc;
+    }

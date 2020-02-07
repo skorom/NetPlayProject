@@ -20,8 +20,7 @@ namespace AIMoba.Controllers
         private UserDAOService UserDAOService = new UserDAOService();
         public HomeController(ILogger<HomeController> logger)
         {
-            UserDAOService.Register("Szilárdó", "12345");
-            _logger = logger;
+
         }
 
         public IActionResult CreateRoom(string roomname){
@@ -78,32 +77,33 @@ namespace AIMoba.Controllers
                 return RedirectToAction("Login", "Home");
             }
         }
-        
-        public IActionResult FakeAutentication()
-        {
-            using (var db = new UserContext())
-            {
-                var user = new User() { Name = "lacika", Password = "almafa", Score = 10 };
-                db.Users.Add(user);
-                db.SaveChanges();
-            }
-            using (var db = new UserContext())
-            {
-                var users = db.Users
-                    .Where(u=>u.Name == "lacika")
-                    .OrderBy(u => u.Name)
-                    .ToList();
-                users.ForEach(u => Console.WriteLine(u.ToString()));
-            }
 
-            return View();
+        public IActionResult RedirectToLogin()
+        {
+            string name = HttpContext.Request.Form["name"];
+            string password = HttpContext.Request.Form["password"];
+            Console.WriteLine(password);
+            User currentUser = UserDAOService.Register(name, password);
+            if (currentUser!=null)
+            {
+                return RedirectToAction("Login", "Home"); 
+            }
+            else
+            {
+                return RedirectToAction("Error", "Home");
+            }
         }
 
         public IActionResult Login()
         {
             return View();
         }
-       
+
+        public IActionResult Register()
+        {
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
