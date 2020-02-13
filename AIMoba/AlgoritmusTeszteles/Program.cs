@@ -221,17 +221,7 @@ namespace Logika
             int tempMax = 0;
             List<Cells> bestValues = new List<Cells>();
             Random rnd = new Random();
-            int random=0;
-
-            for (int i = 0; i < table.Height; i++)
-            {
-                for (int j = 0; j < table.Width; j++)
-                {
-                    Console.Write(valuesTable[i, j]);
-                }
-                Console.WriteLine();
-            }
-            Console.ReadKey();
+            int random=0;            
 
             for (int x = 0; x < table.Height; x++)
             {
@@ -311,8 +301,6 @@ namespace Logika
                     {
                         if (table[sumX + directionsX[i], sumY + directionsY[i]] == checkedState)
                         {
-
-                            Console.WriteLine("bentvagyok "+sumX+" "+sumY); 
                             sum++;
                             sumX += directionsX[i];
                             sumY += directionsY[i];
@@ -328,7 +316,6 @@ namespace Logika
                         break;
                     }                    
 
-                    Console.WriteLine(currentX + " " + currentY + " " + sumX + " " + sumY);
                 } while (sum != 5);
                 if (i % 2 == 0)
                 {
