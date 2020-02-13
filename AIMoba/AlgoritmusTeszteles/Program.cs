@@ -267,9 +267,9 @@ namespace Logika
             FieldState checkedState = FieldState.None;
             FieldState[] playerFieldStates = {FieldState.PlayerOne, FieldState.PlayerTwo, FieldState.PlayerThree, FieldState.PlayerFour};
 
-            for (int x = 0; x < table.Height - 1; x++)
+            for (int x = 0; x < table.Height; x++)
             {
-                for (int y = 0; y < table.Width - 1; y++)
+                for (int y = 0; y < table.Width; y++)
                 {
                     if (table[x, y] == FieldState.None)
                     {
@@ -299,18 +299,37 @@ namespace Logika
             int sumX = 0, sumY = 0;
             int sum = 0;
             int maxValue = 0;
-
+            
             for (int i = 0; i < 8; i++)
             {                
                 sumX = currentX;
                 sumY = currentY;
-                while(!(sumY == table.Width-1 || sumX == table.Height-1 || table[sumX+directionsX[i], sumY+directionsY[i]] != checkedState || sum == 5))
+
+                do
                 {
-                    sum++;
-                    sumX += directionsX[i];
-                    sumY += directionsY[i];
-                    Console.WriteLine(currentX+" "+currentY+" "+sumX+" "+sumY);
-                }
+                    if ((sumX + directionsX[i]) >= 0 && (sumY + directionsY[i]) >= 0 && (sumX + directionsX[i]) <= 19 && (sumY + directionsY[i]) <= 19)
+                    {
+                        if (table[sumX + directionsX[i], sumY + directionsY[i]] == checkedState)
+                        {
+
+                            Console.WriteLine("bentvagyok "+sumX+" "+sumY); 
+                            sum++;
+                            sumX += directionsX[i];
+                            sumY += directionsY[i];
+                        }
+                        else
+                        {
+                            break;
+                        }
+
+                    }
+                    else
+                    {                       
+                        break;
+                    }                    
+
+                    Console.WriteLine(currentX + " " + currentY + " " + sumX + " " + sumY);
+                } while (sum != 5);
                 if (i % 2 == 0)
                 {
                     if (sum > maxValue)
