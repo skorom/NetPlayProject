@@ -1,7 +1,9 @@
+
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
+
 
 namespace Logika
 {
@@ -95,6 +97,7 @@ namespace Logika
 
         static void Main(string[] args)
         {
+
             GridModel table = new GridModel(20, 20);
             int players, px, py;
             bool end = false;
@@ -407,6 +410,7 @@ namespace Logika
             }
 
             return false;
+
         }
     }
 }

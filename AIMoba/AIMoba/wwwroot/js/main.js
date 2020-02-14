@@ -17,11 +17,11 @@ let lastTimestamp;
 let amobaGrid;
 
 let States = {
-    "None": 0 ,
+    "None": 0,
     "PlayerOne": 1,
     "PlayerTwo": 2,
     "PlayerThree": 3,
-    "PlayerFour": 4 
+    "PlayerFour": 4
 };
 
 // egy dictionary amely a játékosok alakzataihoz rendeli a színeket
@@ -33,58 +33,13 @@ let Colors = {
 };
 
 // az oldal betöltésével elindulnak a megjelenítéshez szükséges dolgok 
-window.addEventListener('DOMContentLoaded' ,() => {
+window.addEventListener('DOMContentLoaded', () => {
     setup();
     lastTimestamp = 0;
-
-
-    canvas.addEventListener('click', (e) => {
-        let mousepos = getMousePos(e);
-        let iPos = Math.floor(mousepos.y / cellSize);
-        let jPos = Math.floor(mousepos.x / cellSize);
-        console.log(iPos, jPos);
-
-        let params = window.location.pathname.split('/').filter(x => x.length != 0);
-        let gameID = parseInt(params[params.length - 2]);
-        let playerID = parseInt(params[params.length - 1]);
-        console.log(gameID, playerID);
-        fetch('../../makemove', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ GameID: gameID, PlayerID: playerID, Position: { IPos: iPos, JPos: jPos} })
-        }).then((res) => {
-            console.log(res);
-            return res.json();
-        }).then(handleResponse);
-
-    });
 
     draw(0);
     //window.requestAnimationFrame(draw);
 });
-
-function handleResponse(data) {
-    if (data.responsMessage == true) {
-        for (let i = 0; i < data.data.length; i++) {
-            amobaGrid.fields[data.data[i].pos.iPos][data.data[i].pos.jPos] = data.data[i].mark;
-        }
-        draw(0);
-        if (data.endOfGame) {
-            if (data.endState == 1) {
-                alert("you won");
-            } else if (data.endState == -1) {
-                alert("you lost");
-            } else if (data.endState == 0) {
-                alert("draw");
-            }
-        }
-
-    } else {
-
-    }
-}
 
 function getMousePos(e) {
     var rect = canvas.getBoundingClientRect();
@@ -95,7 +50,7 @@ function getMousePos(e) {
 }
 
 // egyszer fut le az draw előtt
-function setup(){
+function setup() {
     canvas = document.querySelector('#myCanvas');
     context = canvas.getContext('2d');
     cellSize = canvas.width / cols;
@@ -114,13 +69,11 @@ function setup(){
     // width = canvas szélesség / cellaSpaceing     vagy  cellaSpaceing = canvasSzélessége / width
     // height = canvas magassága / cellaSpaceing    vagy  cellaSpaceing = canvasSzélessége / height
     amobaGrid = new Grid(cols, rows, cellSize, 6);
-    
-    
-    // fillWithDummyData(amobaGrid.fields, amobaGrid.width, amobaGrid.height, 5);
+
 }
 
 // folyamatos frissítés
-function draw(timestamp){
+function draw(timestamp) {
     // háttér törlése
     context.fillStyle = backgroundColor;
     context.fillRect(0, 0, canvas.width, canvas.height);
@@ -128,13 +81,4 @@ function draw(timestamp){
     amobaGrid.show(context);
 
     //window.requestAnimationFrame(draw);
-}
-
- // TODO: kitörölni amikor az AImoba fő projectjébe kerül ez a kód
-function fillWithDummyData(fields,w,h, range){
-    for(let i = 0; i < h; i++){
-        for(let j = 0; j < w; j++){
-            fields[i][j] = Math.floor(Math.random()*range) 
-        }
-    }
 }

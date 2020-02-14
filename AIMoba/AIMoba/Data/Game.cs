@@ -7,54 +7,70 @@ namespace AIMoba.Data
 {
     public class Game
     {
-        public int ID { get; set; }
+        private object _lock = new object();
+        public string ID { get; set; }
         // a játékban eddig megtett lépések száma
-        public int Steps { get; set; } = 0;
+        private int Steps { get; set; } = 0;
         // a tábla melyen a játékosok játszanak
-        public GridModel grid { get; set; }
+        private GridModel grid { get; set; }
+
+        public FieldState LastMark { get; private set; }
 
         // a játékosokat, robotokat is beleértve tárolja 
-        public Dictionary<int,IPlayer> players = new Dictionary<int, IPlayer>();
-        public Game(int id=0, int numberOfRobots=1)
+        private Dictionary<string, IPlayer> players = new Dictionary<string, IPlayer>();
+        public Game(string id)
         {
             grid = new GridModel();
-            for (int i = 0; i < numberOfRobots; i++)
-                players.Add(i+1,new Robot(MapNumToState(players.Count+1)));
             this.ID = id;
-            // sorszám megállapíttása
-            ReIndex();
         }
 
         // új játékos hozzáadása
-        public void AddPlayer(int ID)
+        public void AddPlayer(string ID)
         {
-            players.Add(ID, new Player(MapNumToState(players.Count+1),ID));
-            // sorszám megállapíttása
-            ReIndex();
+            lock (_lock)
+            {
+                players.Add(ID, new Player(MapNumToState(players.Count+1),ID));
+            }
+
+            CalculateTurns();
+        }
+        
+        public void AddRobot()
+        {
+            string id = players.Count.ToString();
+            lock (_lock)
+            {
+                players.Add(id , new Robot(MapNumToState(players.Count + 1),id));
+            }
+
+            CalculateTurns();
         }
 
-        private void ReIndex()
+        private void CalculateTurns()
         {
-            int i = 0;
-            // végig megy a játékosokon és sorszámot ad nekik
-            foreach (var player in players.Values)
+            int turnIndex = 0;
+            foreach (var p in players.Values)
             {
-                if(!player.IsComputer)
-                    player.Index = i++;
+                if (!p.IsComputer)
+                {
+                    p.Turn = turnIndex++;
+                }
             }
-            foreach (var player in players.Values)
+            foreach (var p in players.Values)
             {
-                if (player.IsComputer)
-                    player.Index = i++;
+                if (p.IsComputer)
+                {
+                    p.Turn = turnIndex++;
+                }
             }
         }
 
         // sorszám alapján keresi meg a játékost
-        private IPlayer SearchByIndex(int index)
+        private IPlayer SearchByIndex(int nextTurnIndex)
         {
             foreach (var player in players.Values)
             {
-                if (player.Index == index)
+                if (player.Turn == nextTurnIndex)
                 {
                     return player;
                 }
@@ -70,18 +86,20 @@ namespace AIMoba.Data
 
         // kezeli az adat feldolgozását ( az adat a kontrollertől való ) 
         // visszatérési értéke akkor true ha a lépés szabályos és a saját körében történt
-        public bool Update(RequestData data, Message message)
+        public bool PlayerMove(string id, Position position)
         {
             // ha létezik a játékos
-            if (players.ContainsKey(data.PlayerID))
+            if (players.ContainsKey(id))
             {
-                IPlayer currentPlayer = players[data.PlayerID];
+                IPlayer currentPlayer = players[id];
                 // ha a jelenlegi játékos köre következik
-                if (Steps % players.Count == currentPlayer.Index)
+                if (Steps % players.Count == currentPlayer.Turn)
                 {
-                    if(currentPlayer.MakeMove(grid, data.position))
+                    if (currentPlayer.MakeMove(grid, position))
                     {
+                        LastMark = currentPlayer.Mark;
                         Steps++;
+                        return true;
                     }
                     else
                     {
@@ -92,32 +110,39 @@ namespace AIMoba.Data
                 {
                     return false;
                 }
-
-                if (GameLogic.GameEnd(grid, data.position.IPos, data.position.JPos, 5))
-                {
-                    message.EndOfGame = true;
-                    message.EndState = 1;
-                    return true;
-                }
-                // ameddig robot következik a robot lép
-                if (SearchByIndex(Steps % players.Count)!= null && SearchByIndex(Steps % players.Count).IsComputer)
-                {
-                    currentPlayer = SearchByIndex(Steps % players.Count);
-                    int aiJPos = 0;
-                    int aiIPos = 0;
-                    GameLogic.AI(grid, currentPlayer.Mark, ref aiIPos, ref aiJPos);
-                    message.Data.Add(new Move(new Position(aiIPos, aiJPos), currentPlayer.Mark));
-                    currentPlayer.MakeMove(grid, new Position(aiIPos,aiJPos));
-                    Steps++;
-                    if (GameLogic.GameEnd(grid, aiIPos, aiJPos, 5))
-                    {
-                        message.EndOfGame = true;
-                        message.EndState = -1;
-                    }
-                }
             }
-            return true;
+            return false;
         }
+
+        public bool isGameOver(Position lastMove)
+        {
+            return GameLogic.GameEnd(grid, lastMove.IPos, lastMove.JPos, 5);
+        }
+
+        public bool isRobotNext(Position lastMove)
+        {
+            return SearchByIndex(Steps % players.Count).IsComputer;
+        }
+
+        public Position MoveRobot()
+        {
+            IPlayer currentPlayer = SearchByIndex(Steps % players.Count);
+            if (currentPlayer.IsComputer)
+            {
+                int aiJPos = 0;
+                int aiIPos = 0;
+                GameLogic.AI(grid, currentPlayer.Mark, ref aiIPos, ref aiJPos);
+                currentPlayer.MakeMove(grid, new Position(aiIPos, aiJPos));
+                Steps++;
+                LastMark = currentPlayer.Mark;
+                return new Position(aiIPos, aiJPos);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         public static FieldState MapNumToState(int num)
         {
             switch (num)

@@ -5,14 +5,15 @@ namespace AIMoba.Data
 {
     public class Player : IPlayer
     {
-        public int ID { get; set; }
+        public string ID { get; set; }
+
         public FieldState Mark { get; set; }
 
         public bool IsComputer => false;
 
-        public int Index { get; set; }
+        public int Turn { get; set; }
 
-        public Player(FieldState mark, int ID = 0)
+        public Player(FieldState mark, string ID)
         {
             this.ID = ID;
             this.Mark = mark;

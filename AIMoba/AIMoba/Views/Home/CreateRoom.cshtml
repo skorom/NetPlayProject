@@ -1,0 +1,30 @@
+﻿<link rel="stylesheet" href="~/css/custom-createroom-stiles.css">
+<form asp-controller="Home" method="post">
+    <div class="container">
+        <h1 class="large text-center bold mb-5 custom-glowing-title">Hozd létre a szobádat!</h1>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-2"></div>
+                <div class="col-lg-6 col-md-8 col-12">
+                    <div class="form-group">
+                        <label for="room-name" class="m-0">Szoba neve:</label>
+                        <input type="text" class="form-control my-3" id="roomName" name="roomName" placeholder="Szoba név" required>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-2"></div>
+            </div>
+            <input hidden id="playerName" name="playerName" type="text" value="@ViewBag.name" />
+            <div class="row text-center pt-5">
+                <div class="col-sm-3"></div>
+                <div class="col-sm-3 col-12 mr-3">
+                    <input type="submit" class="btn btn-primary p-2 mb-2 mw-75" value="Szoba létrehozása" asp-action="MakeRoom" />
+                </div>
+                <div class="col-sm-3 col-12">
+                    <a href="@Url.Action("Lobby", "Home", new {roomName = ViewBag.name})" class="btn btn-danger p-2 mb-2 mw-75">Vissza</a>
+                </div>
+                <div class="col-sm-3"></div>
+            </div>
+        </div>
+    </div>
+</form>
+
