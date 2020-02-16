@@ -10,7 +10,7 @@ namespace AIMoba.Controllers
     public class GameController : Controller
     {
         // a játékok eltárolása
-        public static Dictionary<string, Game> currentGames = new Dictionary<string, Game>();
+        public static Dictionary<string, Game> currentGames = new Dictionary<string, Game>();        
 
         public IActionResult YourGame(string roomname, string name)
         {
@@ -21,6 +21,6 @@ namespace AIMoba.Controllers
             ViewBag.roomname = roomname;
             ViewBag.name = name;
             return View();
-        }
+        }        
     }
 }

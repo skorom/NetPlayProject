@@ -81,6 +81,7 @@ function removePlayer(id) {
 
     if (current.status != "Elutasítva") {
     // TODO: a szerveroldalról is törölni kell a meghívást, vagy a szobából a játékost amenyiben már elfogadta a meghívást
+        
     }
 }
 

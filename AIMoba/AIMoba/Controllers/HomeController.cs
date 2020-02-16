@@ -34,8 +34,17 @@ namespace AIMoba.Controllers
             string roomName = HttpContext.Request.Form["roomName"];
             string name = HttpContext.Request.Form["playerName"];
 
+            if (!GameController.currentGames.ContainsKey(roomName))
+            {
             GameController.currentGames.Add(roomName, new Game(roomName));
             return RedirectToAction("JoinRoom","Home",new { roomName, name});
+            }
+            else 
+            {
+                //TODO: alert hogy van ilyen szoba
+                return RedirectToAction("Login","Home"); //ez csak egy random valami hogy legyen returnolva valami
+            }
+
         }
 
         public IActionResult RedirectToJoinRoom()

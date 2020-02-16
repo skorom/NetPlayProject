@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
             connection.invoke("JoinLobby", roomName, myName)
                 .catch(err => console.error(err.toString()));
 
-            // ha a kapcsolat létrejött akkor az alábbi gombok elérhetőek
+            // ha a kapcsolat létrejött akkor az alábbi gombok elérhetőek            
             document.getElementById("inviteButton").disabled = false;
             document.getElementById("readyButton").disabled = false;
 
