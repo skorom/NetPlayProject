@@ -88,4 +88,11 @@ connection.on("StartGame", (link) => {
     window.location = link + "/" + myName;
 });
 
-connection.on("Message", (msg) => console.log(msg));
+connection.on("Message", (title, type, msg) => {
+    VanillaToasts.create({
+        title: title,
+        text: msg,
+        type: type, // success, info, warning, error   / optional parameter
+        timeout: 3500 // hide after 5000ms, // optional paremter
+    });
+});

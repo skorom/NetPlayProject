@@ -24,7 +24,18 @@ connection.start().then(function () {
 });
 
 connection.on("Invited", function (roomname) {
-    document.getElementById("invitingroom").innerText = roomname;
-    document.getElementById("roomName").value = roomname;
-    toggleLayers();
+    (function(roomname) {
+        VanillaToasts.create({
+            title: 'Meghívás',
+            text: 'Meghívtak a ' + roomname + 'szobába',
+            type: 'success', // success, info, warning, error   / optional parameter
+            timeout: 5000, // hide after 5000ms, // optional paremter
+            callback: () => {
+                document.getElementById("invitingroom").innerText = roomname;
+                document.getElementById("roomName").value = roomname;
+                toggleLayers();
+            }
+        });
+    }) (roomname);
+   
 });
