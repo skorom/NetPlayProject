@@ -42,25 +42,24 @@ namespace AIMoba.Data
             {
                 players.Add(id , new Robot(MapNumToState(players.Count + 1),id));
             }
-
             CalculateTurns();
         }
 
         private void CalculateTurns()
         {
             int turnIndex = 0;
-            foreach (var p in players.Values)
+            foreach (var key in players.Keys)
             {
-                if (!p.IsComputer)
+                if (!players[key].IsComputer)
                 {
-                    p.Turn = turnIndex++;
+                    players[key].Turn = turnIndex++;
                 }
             }
-            foreach (var p in players.Values)
+            foreach (var key in players.Keys)
             {
-                if (p.IsComputer)
+                if (players[key].IsComputer)
                 {
-                    p.Turn = turnIndex++;
+                    players[key].Turn = turnIndex++;
                 }
             }
         }
