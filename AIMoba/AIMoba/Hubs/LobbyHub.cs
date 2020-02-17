@@ -202,5 +202,13 @@ namespace AIMoba.Hubs
             }
             await base.OnDisconnectedAsync(exception);
         }
+
+        public async Task RemovePlayer(string roomName, string name)
+        {
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomName);
+
+            //TODO: valahogy rájönni hogy hogyan tudom meg hogy melyik playert kell törölni
+            Lobby.lobbys[roomName].Remove(/*valami ami jó ide*/);
+        }
     }
 }

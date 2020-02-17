@@ -60,6 +60,28 @@ function addRobotToRoom() {
     connection.invoke("AddRobot", roomName).catch((err) => console.error(err.toString()));
 }
 
+function removePlayer(id) {
+    //szerveroldali törlés
+    let roomName = document.getElementById('roomName').innerText;
+    //TODO: ha rájöttem hogyan határozzuk meg azt hogy melyik playert kell törölni akkor átpasszolás függvénynek
+    connection.invoke("RemovePlayer", roomName)
+        .catch((err) => console.error(err.toString()));
+
+    // kliensoldali törlés
+    let current = records.findIndex(e => e.id == id);
+    if (current == -1) return;
+    current = records[current];
+
+    current.element.parentNode.removeChild(current.element);
+    records.splice(id - 1, 1);
+    recalculateIDs();
+
+    if (current.status != "Elutasítva") {
+        // TODO: a szerveroldalról is törölni kell a meghívást, vagy a szobából a játékost amenyiben már elfogadta a meghívást
+
+    }
+}
+
 // Kész állapotra váltás
 document.getElementById("readyButton").addEventListener("click", function (event) {
     let myName = document.getElementById("name").innerText;
