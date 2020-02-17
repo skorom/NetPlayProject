@@ -35,6 +35,14 @@ namespace AIMoba.Hubs
         public async Task InvitePlayer(string roomName, string name)
         {
             await Task.Run(async () => {
+                if (Lobby.lobbys.ContainsKey(roomName))
+                {
+                    if (Lobby.lobbys[roomName].Count >= 4)
+                    {
+                        await Clients.Caller.SendAsync("Message", "Figyelem!", "warning","Egy szobában maximum 4 játékos tartózkodhat.");
+                        return;
+                    }
+                }
                
                     if (nameToConnection.ContainsKey(name))
                     {
@@ -67,7 +75,7 @@ namespace AIMoba.Hubs
                     {
                         Name = name,
                         Role = PlayerRights.Játékos,
-                        Score = 999,
+                        Score = (new UserDAOService()).FindUserByName(name).Score, // TODO: Refactor, Singleton 
                         State = PlayerState.Folyamatban
                     }).Stringify());
                     
@@ -80,14 +88,21 @@ namespace AIMoba.Hubs
         {
             await Task.Run( async () =>
             {
+
+                
                 if (GameController.currentGames.ContainsKey(roomName))
                 {
+                    if (Lobby.lobbys[roomName].Count >= 4)
+                    {
+                        await Clients.Caller.SendAsync("Message", "Figyelem!", "warning", "Egy szobában maximum 4 játékos tartózkodhat.");
+                        return;
+                    }
                     GameController.currentGames[roomName].AddRobot();
                     PlayerModel robot = new PlayerModel()
                     {
                         Name = Robot.GetNewName(),
                         Role = PlayerRights.Robot,
-                        Score = 999,
+                        Score = 1000,
                         State = PlayerState.Kész
                     };
 
@@ -118,7 +133,7 @@ namespace AIMoba.Hubs
                                     {
                                         Name = name,
                                         Role = PlayerRights.Játékos,
-                                        Score = 999,
+                                        Score = (new UserDAOService()).FindUserByName(name).Score, // TODO: Refactor, Singelton
                                         State = PlayerState.Csatlakozott
                                     });
                             }
@@ -140,7 +155,7 @@ namespace AIMoba.Hubs
                                 new PlayerModel() {
                                     Name = name,
                                     Role = PlayerRights.Tulajdonos,
-                                    Score = 999,
+                                    Score = (new UserDAOService()).FindUserByName(name).Score, // TODO: Refactor, Singelton
                                     State = PlayerState.Csatlakozott
                                 }
                             });
