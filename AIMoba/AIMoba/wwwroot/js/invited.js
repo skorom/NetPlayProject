@@ -1,4 +1,4 @@
-function toggleLayers() {
+ï»¿function toggleLayers() {
     let cover = document.getElementById("back-cover").style.visibility;
 
     document.getElementById("add-player-prompt").style.visibility =
@@ -26,8 +26,8 @@ connection.start().then(function () {
 connection.on("Invited", function (roomname) {
     (function(roomname) {
         VanillaToasts.create({
-            title: 'Meghívás',
-            text: 'Meghívtak a ' + roomname + 'szobába',
+            title: 'MeghÃ­vÃ¡s',
+            text: 'MeghÃ­vtak a ' + roomname + 'szobÃ¡ba',
             type: 'success', // success, info, warning, error   / optional parameter
             timeout: 5000, // hide after 5000ms, // optional paremter
             callback: () => {
@@ -39,3 +39,14 @@ connection.on("Invited", function (roomname) {
     }) (roomname);
    
 });
+
+function message(title, type, msg) {
+    VanillaToasts.create({
+        title: title,
+        text: msg,
+        type: type, // success, info, warning, error   / optional parameter
+        timeout: 4000
+    });
+}
+
+connection.on("Message", message);

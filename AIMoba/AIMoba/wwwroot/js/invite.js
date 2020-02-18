@@ -55,10 +55,30 @@ function SendInvite() {
         .catch((err) => console.error(err.toString()));
 }
 
+function deleteFromServer(name) {
+    let roomName = document.getElementById('roomName').innerText;
+    connection.invoke("DeletePlayerFromRoom", roomName, name)
+        .catch((err) => console.error(err.toString()));
+}
+
 function addRobotToRoom() {
     let roomName = document.getElementById('roomName').innerText;
     connection.invoke("AddRobot", roomName).catch((err) => console.error(err.toString()));
 }
+
+connection.on("DeletePlayer", (name) => {
+    // kliensoldali törlés
+    let current = records.findIndex(p => p.name == name)
+    if (current == -1) return;
+    current = records[current];
+    current.element.parentNode.removeChild(current.element);
+    records.splice(current.id - 1, 1);
+    recalculateIDs();
+});
+
+connection.on("kick", () => {
+    window.location = "/Home/Lobby/" + document.getElementById("name").innerText;;
+});
 
 // Kész állapotra váltás
 document.getElementById("readyButton").addEventListener("click", function (event) {
@@ -93,6 +113,6 @@ connection.on("Message", (title, type, msg) => {
         title: title,
         text: msg,
         type: type, // success, info, warning, error   / optional parameter
-        timeout: 3500 // hide after 5000ms, // optional paremter
+        timeout: 3500
     });
 });

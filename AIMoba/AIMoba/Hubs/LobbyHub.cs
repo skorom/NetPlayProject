@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.SignalR;
 using AIMoba.Controllers;
 using AIMoba.Data;
 using AIMoba.Models;
+using System.Threading;
 
 namespace AIMoba.Hubs
 {
@@ -61,7 +62,7 @@ namespace AIMoba.Hubs
                     }
                     else
                     {
-                        await Clients.Caller.SendAsync("Message","Figyelem!", "warning", name+" nevű játékos jelenleg nincs online");
+                        await Clients.Caller.SendAsync("Message","Figyelem!", "warning", name+" nevű játékos jelenleg nem elérhető.");
                     }
                 
 
@@ -84,6 +85,50 @@ namespace AIMoba.Hubs
             });
         }
 
+        public async Task DeletePlayerFromRoom(string roomName, string name)
+        {
+            if (Lobby.lobbys.ContainsKey(roomName))
+            {
+                PlayerModel current = Lobby.lobbys[roomName].FirstOrDefault(p => p.Name == name);
+                if(current != null)
+                {
+                    Lobby.lobbys[roomName].Remove(current);
+                    if(current.Role != PlayerRights.Robot)
+                    {
+                        await Groups.RemoveFromGroupAsync(nameToConnection[name], roomName);
+                        await Clients.Client(nameToConnection[name]).SendAsync("kick");
+                    }
+                    if (current.Role != PlayerRights.Tulajdonos)
+                    {
+                        await Clients.Group(roomName).SendAsync("DeletePlayer", name);
+                    }
+                    else
+                    {
+                        await Clients.Caller.SendAsync("Message", "Figyelem!", "warning", "A tulajdonost nem távolíthatod el.");
+                    }
+                    
+                }
+                else if (Lobby.invitations.ContainsKey(name))
+                {
+                    if (Lobby.invitations[name].Contains(roomName))
+                    {
+                        Lobby.invitations[name].Remove(roomName);
+                        await Clients.Group(roomName).SendAsync("DeletePlayer", name);
+                    }
+                }
+
+            }
+            else if (Lobby.invitations.ContainsKey(name))
+            {
+                if (Lobby.invitations[name].Contains(roomName))
+                {
+                    Lobby.invitations[name].Remove(roomName);
+                    await Clients.Group(roomName).SendAsync("DeletePlayer", name);
+                }
+            }
+
+        }
+
         public async Task AddRobot(string roomName)
         {
             await Task.Run( async () =>
@@ -97,7 +142,6 @@ namespace AIMoba.Hubs
                         await Clients.Caller.SendAsync("Message", "Figyelem!", "warning", "Egy szobában maximum 4 játékos tartózkodhat.");
                         return;
                     }
-                    GameController.currentGames[roomName].AddRobot();
                     PlayerModel robot = new PlayerModel()
                     {
                         Name = Robot.GetNewName(),
@@ -142,6 +186,10 @@ namespace AIMoba.Hubs
                             await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
                             await Clients.Group(roomName).SendAsync("EditOrAddPlayer", Lobby.lobbys[roomName].FirstOrDefault(x => x.Name == name).Stringify());
                         }
+                    }
+                    else
+                    {
+                       // abcd
                     }
                 }
                 else if (GameController.currentGames.ContainsKey(roomName) && !Lobby.lobbys.ContainsKey(roomName)) 
@@ -194,6 +242,13 @@ namespace AIMoba.Hubs
             {
                 if(Lobby.lobbys[roomName].All( player => player.State == PlayerState.Kész))
                 {
+                    foreach(var p in Lobby.lobbys[roomName])
+                    {
+                        if (p.Role == PlayerRights.Robot)
+                        {
+                            GameController.currentGames[roomName].AddRobot();
+                        }
+                    }
                     // ha a szoba létezik és mindenki kész ,akkor mindenkinek elküldi a linket a játék szobához
                     string link = "/Game/YourGame/" + roomName;
                     await Clients.Group(roomName).SendAsync("StartGame", link);
