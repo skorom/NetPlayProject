@@ -93,7 +93,7 @@ namespace AIMoba.Hubs
                 if(current != null)
                 {
                     Lobby.lobbys[roomName].Remove(current);
-                    if(current.Role != PlayerRights.Robot)
+                    if(current.Role != PlayerRights.Robot && current.Role!=PlayerRights.Tulajdonos)
                     {
                         await Groups.RemoveFromGroupAsync(nameToConnection[name], roomName);
                         await Clients.Client(nameToConnection[name]).SendAsync("kick");
