@@ -4,14 +4,6 @@ let records = [];
 // a táblázat amihez az új elemeket hozzáfüzzük vagy ahonnan régieket letöröljük
 let body = document.querySelector("#players").querySelector("tbody");
 
-/*//kapcsolat a szerverrel
-let connection = new signalR.HubConnectionBuilder()
-    .withUrl("/lobbyHub")
-    .configureLogging(signalR.LogLevel.Information)
-    .build();
-document.addEventListener('DOMContentLoaded', () => { connection.start() });*/
-
-
  // a felugró ablakon a Mégse gomb kattintása
  document.querySelector("#cancel-player-addition")
     .addEventListener("click", e => {
@@ -75,7 +67,7 @@ function toggleLayers() {
     cover == "visible" ? "hidden" : "visible";
 }
 
-/*// játékos törlése kliens oldalról
+// játékos törlése kliens oldalról
 // TODO: Szerveroldali törlés
 function removePlayer(id) {
     let current = records.findIndex(e => e.id == id);
@@ -87,12 +79,11 @@ function removePlayer(id) {
     records.splice(id - 1, 1);
     recalculateIDs();
 
-
     if (current.status != "Elutasítva") {
     // TODO: a szerveroldalról is törölni kell a meghívást, vagy a szobából a játékost amenyiben már elfogadta a meghívást
         
     }
-}*/
+}
 
 // egy játékos adatait változtatja
 // név alapján keresi meg a játékost és az állapotát és a pontjait képes változtatni
