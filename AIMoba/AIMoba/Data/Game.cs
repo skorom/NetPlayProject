@@ -130,7 +130,7 @@ namespace AIMoba.Data
             {
                 int aiJPos = 0;
                 int aiIPos = 0;
-                GameLogic.AI(grid, currentPlayer.Mark, ref aiIPos, ref aiJPos);
+                GameLogic.AI(grid, currentPlayer.Mark, ref aiIPos, ref aiJPos, players.Count);
                 currentPlayer.MakeMove(grid, new Position(aiIPos, aiJPos));
                 Steps++;
                 LastMark = currentPlayer.Mark;
