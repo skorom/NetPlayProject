@@ -1,12 +1,27 @@
 body {
-    background: #47a2dd;
+    background: #000;
 }
 
-.custom-glowing-title {
-    font-weight: bold;
-    text-shadow: .1rem .2rem .05rem black;
-    color: #001aeb;
+h1 {
+    font-size: 60px;
+    color: #fff;
+    text-align: center;
     text-transform: uppercase;
+    animation: pislakol 10s infinite;
+    font-weight: bolder;
+}
+@keyframes pislakol {
+    0% {
+        text-shadow: 0 0 5px #fff, 0 0 10px #03e9f4
+    }
+
+    50% {
+        text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #03e9f4, 0 0 30px #03e9f4, 0 0 40px #03e9f4, 0 0 55px #03e9f4
+    }
+
+    100% {
+        text-shadow: 0 0 5px #fff, 0 0 10px #03e9f4
+    }
 }
 
 #add-player-prompt {
@@ -39,3 +54,26 @@ body {
     top: 0;
     left: 0;
 }
+
+a{
+    position: relative;
+    display: inline-block;
+    background-color: black;
+    outline: none;
+    padding: 20px 20px;
+    margin: 40px 0;
+    color: #03e9f4;
+    font-size: 18px;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: 0.5s;
+    font-weight: bold !important;
+    letter-spacing: 3px;
+    border-radius: 20px;
+    border: 2px solid #03e9f4;
+}
+
+    a:hover{
+        background-color: #03e9f4;
+        color: #000;
+    }
