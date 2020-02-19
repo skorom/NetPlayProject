@@ -74,7 +74,7 @@
     </div>
 
     <div class="clearfix">
-        <a href="#" class="btn btn-danger p-2 mx-5 mb-3 float-right">Szoba elhagyása</a>
+        <a asp-action="Lobby" asp-route-roomName="@ViewBag.name" class="btn btn-danger p-2 mx-5 mb-3 float-right">Szoba elhagyása</a>
         <button id="readyButton" class="btn btn-primary">Készen állok</button>
         <button id="startButton" class="btn btn-primary">Játék elkezdése</button>
     </div>

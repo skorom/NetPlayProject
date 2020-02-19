@@ -57,7 +57,6 @@ namespace AIMoba.Controllers
             string roomName = HttpContext.Request.Form["roomName"];
             string name = HttpContext.Request.Form["playerName"];
 
-            GameController.currentGames.Add(roomName, new Game(roomName));
             return RedirectToAction("JoinRoom","Home",new { roomName, name});
         }
 

@@ -168,13 +168,35 @@ namespace AIMoba.Hubs
 
         }
 
+        private async Task DeletePlayer(string name, string roomName)
+        {
+            if (Lobby.lobbys.ContainsKey(roomName))
+            {
+                PlayerModel current = Lobby.lobbys[roomName].FirstOrDefault(p => p.Name == name);
+                if (current != null)
+                {
+                    Lobby.lobbys[roomName].Remove(current);
+                    if (current.Role != PlayerRights.Robot)
+                    {
+                        await Groups.RemoveFromGroupAsync(nameToConnection[name], roomName);
+                        await Clients.Client(nameToConnection[name]).SendAsync("kick");
+                    }
+
+                    await Clients.Group(roomName).SendAsync("DeletePlayer", name);
+
+                }
+
+            }
+
+        }
+
         public async Task AddRobot(string roomName)
         {
             await Task.Run(async () =>
            {
 
 
-               if (GameController.currentGames.ContainsKey(roomName))
+               if (Lobby.lobbys.ContainsKey(roomName))
                {
                    if (Lobby.lobbys[roomName].Count >= 4)
                    {
@@ -228,7 +250,7 @@ namespace AIMoba.Hubs
                         }
                     }
                 }
-                else if (GameController.currentGames.ContainsKey(roomName) && !Lobby.lobbys.ContainsKey(roomName))
+                else
                 {
                     // Ha nem volt meghívva a játékos, de a játék létezik, akkor a jelenlegi felhasználó a Tulajdonos
                     lock (_lock)
@@ -282,6 +304,7 @@ namespace AIMoba.Hubs
                         await Clients.Caller.SendAsync("Message", "Figyelem!", "warning", "Egyedül elég unalmas...");
                         return;
                     }
+                    GameController.currentGames.Add(roomName, new Game(roomName));
                     foreach (var p in Lobby.lobbys[roomName])
                     {
                         if (p.Role == PlayerRights.Robot)
@@ -307,12 +330,8 @@ namespace AIMoba.Hubs
             var room = Lobby.lobbys.FirstOrDefault(r => r.Value.Where(p => p.Name == playerName).Count() > 0);
             if(room.Key != null)
             {
+                await DeletePlayer(playerName, room.Key);
                 await Groups.RemoveFromGroupAsync(Context.ConnectionId, room.Key);
-                room.Value.Remove(room.Value.First(p => p.Name == playerName));
-                if (room.Value.Count == 0)
-                {
-                    Lobby.lobbys.Remove(room.Key);
-                }
             }
 
             lock (_lock)
