@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AIMoba.Data;
 
 namespace AIMoba.Data
 {
@@ -15,7 +16,7 @@ namespace AIMoba.Data
             {
                 if (!db.Users.Select(u => u.Name).Contains(name))
                 {
-                    User user = new User { Name = name, Password = password, Score = 0 };
+                    User user = new User { Name = name, Password = Hash.ComputeSha256Hash(password), Score = 1200 };
                     db.Users.Add(user);
                     db.SaveChanges();
                     return user;
@@ -29,9 +30,10 @@ namespace AIMoba.Data
         }
         public bool Authenticate(string name, string password)
         {
+            string hashedPwd = Hash.ComputeSha256Hash(password);
             using (UserContext db = new UserContext())
             {
-                return db.Users.FirstOrDefault(u => u.Name == name && u.Password == password) != null;                                
+                return db.Users.FirstOrDefault(u => u.Name == name && u.Password == hashedPwd) != null;                                
             }
         }
         public void Delete(User user)
@@ -39,6 +41,15 @@ namespace AIMoba.Data
             using (var db = new UserContext())
             {
                 db.Users.Remove(user);
+                db.SaveChanges();
+            }
+        }
+
+        public void RemoveAll()
+        {
+            using (var db = new UserContext())
+            {
+                db.Users.RemoveRange(FindAll());
                 db.SaveChanges();
             }
         }
