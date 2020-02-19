@@ -23,8 +23,8 @@ connection.start().then(function () {
     return console.error(err.toString());
 });
 
-connection.on("Invited", function (roomname) {
-    document.getElementById("invitingroom").innerText = roomname;
-    document.getElementById("roomName").value = roomname;
+connection.on("Invited", function (roomName) {
+    document.getElementById("invitingroom").innerText = roomName;
+    document.getElementById("roomName").value = roomName;
     toggleLayers();
 });

@@ -12,13 +12,13 @@ namespace AIMoba.Controllers
         // a játékok eltárolása
         public static Dictionary<string, Game> currentGames = new Dictionary<string, Game>();        
 
-        public IActionResult YourGame(string roomname, string name)
+        public IActionResult YourGame(string roomName, string name)
         {
-            if (currentGames.ContainsKey(roomname))
+            if (currentGames.ContainsKey(roomName))
             {
-                currentGames[roomname].AddPlayer(name);
+                currentGames[roomName].AddPlayer(name);
             }
-            ViewBag.roomname = roomname;
+            ViewBag.roomName = roomName;
             ViewBag.name = name;
             return View();
         }        

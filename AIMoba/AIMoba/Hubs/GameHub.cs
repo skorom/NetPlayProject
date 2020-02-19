@@ -11,26 +11,26 @@ namespace AIMoba.Hubs
     public class GameHub:Hub
     {
         static Dictionary<string, string> players = new Dictionary<string, string>();
-        public async Task Subscribe(string roomname, string name)
+        public async Task Subscribe(string roomName, string name)
         {
-            await Groups.AddToGroupAsync(Context.ConnectionId, roomname);
+            await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
             await Task.Run(() => players.Add(Context.ConnectionId, name));
 
         }
 
-        public async Task Move(string roomname, Position moveTo)
+        public async Task Move(string roomName, Position moveTo)
         {
             await Task.Run(async () =>
             {
-                if (GameController.currentGames.ContainsKey(roomname))
+                if (GameController.currentGames.ContainsKey(roomName))
                 {
-                    Game current = GameController.currentGames[roomname];
+                    Game current = GameController.currentGames[roomName];
                     bool isPossibleMove = current.PlayerMove(players[Context.ConnectionId], moveTo);
 
                     if (isPossibleMove)
                     {
 
-                        await Clients.Group(roomname).SendAsync("WaitForMove", moveTo, current.LastMark);
+                        await Clients.Group(roomName).SendAsync("WaitForMove", moveTo, current.LastMark);
                         
                         if (!current.isGameOver(moveTo))
                         {
@@ -39,11 +39,11 @@ namespace AIMoba.Hubs
                             {
                                 Position robotMove = current.MoveRobot();
 
-                                await Clients.Group(roomname).SendAsync("WaitForMove", robotMove, current.LastMark);
+                                await Clients.Group(roomName).SendAsync("WaitForMove", robotMove, current.LastMark);
 
                                 if (current.isGameOver(robotMove))
                                 {
-                                    await Clients.Group(roomname).SendAsync("GameEnded", players[Context.ConnectionId]);
+                                    await Clients.Group(roomName).SendAsync("GameEnded", players[Context.ConnectionId]);
                                     return;
                                 }
 
@@ -52,7 +52,7 @@ namespace AIMoba.Hubs
                         }
                         else // A játéknak vége van
                         {
-                            await Clients.Group(roomname).SendAsync("GameEnded", players[Context.ConnectionId]);
+                            await Clients.Group(roomName).SendAsync("GameEnded", players[Context.ConnectionId]);
                         }
 
                     }

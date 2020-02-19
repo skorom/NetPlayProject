@@ -23,9 +23,9 @@ namespace AIMoba.Controllers
 
         }
 
-        public IActionResult CreateRoom(string roomname){
+        public IActionResult CreateRoom(string roomName){
             
-            ViewBag.name = roomname; // a játákos neve
+            ViewBag.name = roomName; // a játákos neve
             return View();
         }
 
@@ -53,6 +53,14 @@ namespace AIMoba.Controllers
             string name = HttpContext.Request.Form["playerName"];
 
             return RedirectToAction("JoinRoom", "Home", new { roomName, name});
+        }
+
+        public IActionResult RedirectToJoinRoomFromGame()
+        {
+            string roomName = HttpContext.Request.Form["roomName"];
+            string name = HttpContext.Request.Form["name"];
+
+            return RedirectToAction("JoinRoom", "Home", new { roomName, name });
         }
 
         public IActionResult JoinRoom(string roomName, string name){
