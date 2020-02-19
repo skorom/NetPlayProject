@@ -72,16 +72,7 @@ function toggleLayers() {
 function removePlayer(id) {
     let current = records.findIndex(e => e.id == id);
     if (current == -1) return;
-    current = records[current];
-
-    // kliensoldali törlés
-    current.element.parentNode.removeChild(current.element);
-    records.splice(id - 1, 1);
-    recalculateIDs();
-
-    if (current.status != "Elutasítva") {
-    // TODO: a szerveroldalról is törölni kell a meghívást, vagy a szobából a játékost amenyiben már elfogadta a meghívást
-    }
+    deleteFromServer(records[current].name);
 }
 
 // egy játékos adatait változtatja

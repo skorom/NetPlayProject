@@ -42,8 +42,14 @@ namespace AIMoba.Controllers
         {
             string roomName = HttpContext.Request.Form["roomName"];
             string name = HttpContext.Request.Form["playerName"];
-
-            return RedirectToAction("JoinRoom", "Home", new { roomName, name});
+            if (Data.Lobby.invitations.ContainsKey(name))
+            {
+                if (Data.Lobby.invitations[name].Contains(roomName))
+                {
+                    return RedirectToAction("JoinRoom", "Home", new { roomName, name});
+                }
+            }
+            return RedirectToAction("Lobby", "Home", new { roomName=name});
         }
 
         public IActionResult JoinRoom(string roomName, string name){
@@ -67,8 +73,8 @@ namespace AIMoba.Controllers
         public IActionResult RedirectToLobby()
         {
             string name = HttpContext.Request.Form["name"];
-            string password = HttpContext.Request.Form["password"];
-            Console.WriteLine(password);
+            string password = HttpContext.Request.Form["password"]; // TODO: hash
+
             if (UserDAOService.Authenticate(name, password))
             {
                 return RedirectToAction("Lobby", "Home", new { roomName = name });
@@ -81,8 +87,7 @@ namespace AIMoba.Controllers
         public IActionResult RedirectToLogin()
         {
             string name = HttpContext.Request.Form["name"];
-            string password = HttpContext.Request.Form["password"];
-            Console.WriteLine(password);
+            string password = HttpContext.Request.Form["password"]; // TODO: hash
             User currentUser = UserDAOService.Register(name, password);
             if (currentUser!=null)
             {

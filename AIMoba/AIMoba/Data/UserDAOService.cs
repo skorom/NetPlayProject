@@ -49,6 +49,13 @@ namespace AIMoba.Data
                 return db.Users.FirstOrDefault(u=>u.Id==id);
             }
         }
+        public User FindUserByName(string name)
+        {
+            using (var db = new UserContext())
+            {
+                return db.Users.FirstOrDefault(u => u.Name == name);
+            }
+        }
         public List<User> FindAll()
         {
             using (var db = new UserContext())
