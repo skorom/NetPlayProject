@@ -1,4 +1,4 @@
-function toggleLayers() {
+﻿function toggleLayers() {
     let cover = document.getElementById("back-cover").style.visibility;
 
     document.getElementById("add-player-prompt").style.visibility =
@@ -24,7 +24,29 @@ connection.start().then(function () {
 });
 
 connection.on("Invited", function (roomname) {
-    document.getElementById("invitingroom").innerText = roomname;
-    document.getElementById("roomName").value = roomname;
-    toggleLayers();
+    (function(roomname) {
+        VanillaToasts.create({
+            title: 'Meghívás',
+            text: 'Meghívtak a ' + roomname + 'szobába',
+            type: 'success', // success, info, warning, error   / optional parameter
+            timeout: 5000, // hide after 5000ms, // optional paremter
+            callback: () => {
+                document.getElementById("invitingroom").innerText = roomname;
+                document.getElementById("roomName").value = roomname;
+                toggleLayers();
+            }
+        });
+    }) (roomname);
+   
 });
+
+function message(title, type, msg) {
+    VanillaToasts.create({
+        title: title,
+        text: msg,
+        type: type, // success, info, warning, error   / optional parameter
+        timeout: 4000
+    });
+}
+
+connection.on("Message", message);

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.SignalR;
 using AIMoba.Controllers;
 using AIMoba.Data;
 using AIMoba.Models;
+using System.Threading;
 
 namespace AIMoba.Hubs
 {
@@ -35,6 +36,14 @@ namespace AIMoba.Hubs
         public async Task InvitePlayer(string roomName, string name)
         {
             await Task.Run(async () => {
+                if (Lobby.lobbys.ContainsKey(roomName))
+                {
+                    if (Lobby.lobbys[roomName].Count >= 4)
+                    {
+                        await Clients.Caller.SendAsync("Message", "Figyelem!", "warning","Egy szobában maximum 4 játékos tartózkodhat.");
+                        return;
+                    }
+                }
                
                     if (nameToConnection.ContainsKey(name))
                     {
@@ -53,7 +62,7 @@ namespace AIMoba.Hubs
                     }
                     else
                     {
-                        await Clients.Caller.SendAsync("Message", name+" nevű játékos jelenleg nincs online");
+                        await Clients.Caller.SendAsync("Message","Figyelem!", "warning", name+" nevű játékos jelenleg nem elérhető.");
                     }
                 
 
@@ -67,7 +76,7 @@ namespace AIMoba.Hubs
                     {
                         Name = name,
                         Role = PlayerRights.Játékos,
-                        Score = 999,
+                        Score = (new UserDAOService()).FindUserByName(name).Score, // TODO: Refactor, Singleton 
                         State = PlayerState.Folyamatban
                     }).Stringify());
                     
@@ -76,18 +85,68 @@ namespace AIMoba.Hubs
             });
         }
 
+        public async Task DeletePlayerFromRoom(string roomName, string name)
+        {
+            if (Lobby.lobbys.ContainsKey(roomName))
+            {
+                PlayerModel current = Lobby.lobbys[roomName].FirstOrDefault(p => p.Name == name);
+                if(current != null)
+                {
+                    Lobby.lobbys[roomName].Remove(current);
+                    if(current.Role != PlayerRights.Robot && current.Role!=PlayerRights.Tulajdonos)
+                    {
+                        await Groups.RemoveFromGroupAsync(nameToConnection[name], roomName);
+                        await Clients.Client(nameToConnection[name]).SendAsync("kick");
+                    }
+                    if (current.Role != PlayerRights.Tulajdonos)
+                    {
+                        await Clients.Group(roomName).SendAsync("DeletePlayer", name);
+                    }
+                    else
+                    {
+                        await Clients.Caller.SendAsync("Message", "Figyelem!", "warning", "A tulajdonost nem távolíthatod el.");
+                    }
+                    
+                }
+                else if (Lobby.invitations.ContainsKey(name))
+                {
+                    if (Lobby.invitations[name].Contains(roomName))
+                    {
+                        Lobby.invitations[name].Remove(roomName);
+                        await Clients.Group(roomName).SendAsync("DeletePlayer", name);
+                    }
+                }
+
+            }
+            else if (Lobby.invitations.ContainsKey(name))
+            {
+                if (Lobby.invitations[name].Contains(roomName))
+                {
+                    Lobby.invitations[name].Remove(roomName);
+                    await Clients.Group(roomName).SendAsync("DeletePlayer", name);
+                }
+            }
+
+        }
+
         public async Task AddRobot(string roomName)
         {
             await Task.Run( async () =>
             {
+
+                
                 if (GameController.currentGames.ContainsKey(roomName))
                 {
-                    GameController.currentGames[roomName].AddRobot();
+                    if (Lobby.lobbys[roomName].Count >= 4)
+                    {
+                        await Clients.Caller.SendAsync("Message", "Figyelem!", "warning", "Egy szobában maximum 4 játékos tartózkodhat.");
+                        return;
+                    }
                     PlayerModel robot = new PlayerModel()
                     {
                         Name = Robot.GetNewName(),
                         Role = PlayerRights.Robot,
-                        Score = 999,
+                        Score = 1000,
                         State = PlayerState.Kész
                     };
 
@@ -118,7 +177,7 @@ namespace AIMoba.Hubs
                                     {
                                         Name = name,
                                         Role = PlayerRights.Játékos,
-                                        Score = 999,
+                                        Score = (new UserDAOService()).FindUserByName(name).Score, // TODO: Refactor, Singelton
                                         State = PlayerState.Csatlakozott
                                     });
                             }
@@ -127,6 +186,10 @@ namespace AIMoba.Hubs
                             await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
                             await Clients.Group(roomName).SendAsync("EditOrAddPlayer", Lobby.lobbys[roomName].FirstOrDefault(x => x.Name == name).Stringify());
                         }
+                    }
+                    else
+                    {
+                       // abcd
                     }
                 }
                 else if (GameController.currentGames.ContainsKey(roomName) && !Lobby.lobbys.ContainsKey(roomName)) 
@@ -140,7 +203,7 @@ namespace AIMoba.Hubs
                                 new PlayerModel() {
                                     Name = name,
                                     Role = PlayerRights.Tulajdonos,
-                                    Score = 999,
+                                    Score = (new UserDAOService()).FindUserByName(name).Score, // TODO: Refactor, Singelton
                                     State = PlayerState.Csatlakozott
                                 }
                             });
@@ -179,13 +242,20 @@ namespace AIMoba.Hubs
             {
                 if(Lobby.lobbys[roomName].All( player => player.State == PlayerState.Kész))
                 {
+                    foreach(var p in Lobby.lobbys[roomName])
+                    {
+                        if (p.Role == PlayerRights.Robot)
+                        {
+                            GameController.currentGames[roomName].AddRobot();
+                        }
+                    }
                     // ha a szoba létezik és mindenki kész ,akkor mindenkinek elküldi a linket a játék szobához
                     string link = "/Game/YourGame/" + roomName;
                     await Clients.Group(roomName).SendAsync("StartGame", link);
                 }
                 else
                 {
-                    await Clients.Caller.SendAsync("Message", "Mindenkinek készen kell lennie a játék megkezdéséhez");
+                    await Clients.Caller.SendAsync("Message","Hiba!", "error", "Mindenkinek készen kell lennie a játék megkezdéséhez!");
                 }
             }
         }

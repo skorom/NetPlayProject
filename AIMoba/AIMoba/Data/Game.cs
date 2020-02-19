@@ -42,25 +42,24 @@ namespace AIMoba.Data
             {
                 players.Add(id , new Robot(MapNumToState(players.Count + 1),id));
             }
-
             CalculateTurns();
         }
 
         private void CalculateTurns()
         {
             int turnIndex = 0;
-            foreach (var p in players.Values)
+            foreach (var key in players.Keys)
             {
-                if (!p.IsComputer)
+                if (!players[key].IsComputer)
                 {
-                    p.Turn = turnIndex++;
+                    players[key].Turn = turnIndex++;
                 }
             }
-            foreach (var p in players.Values)
+            foreach (var key in players.Keys)
             {
-                if (p.IsComputer)
+                if (players[key].IsComputer)
                 {
-                    p.Turn = turnIndex++;
+                    players[key].Turn = turnIndex++;
                 }
             }
         }
@@ -131,7 +130,7 @@ namespace AIMoba.Data
             {
                 int aiJPos = 0;
                 int aiIPos = 0;
-                GameLogic.AI(grid, currentPlayer.Mark, ref aiIPos, ref aiJPos);
+                GameLogic.AI(grid, currentPlayer.Mark, ref aiIPos, ref aiJPos, players.Count);
                 currentPlayer.MakeMove(grid, new Position(aiIPos, aiJPos));
                 Steps++;
                 LastMark = currentPlayer.Mark;
