@@ -4,6 +4,7 @@ connection.on("ReceiveMessage", function (user, message) {
     let msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     let encodedMsg= user + " says " + msg;
     document.getElementById("messageList").value += encodedMsg + "\n";
+    document.getElementById('messageList').scrollTop = document.getElementById('messageList').scrollHeight;
 });
 
 document.getElementById("sendButton").addEventListener("click", function (event) {
