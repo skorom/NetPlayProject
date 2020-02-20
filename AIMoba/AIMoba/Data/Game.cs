@@ -2,6 +2,7 @@ using AIMoba.Data;
 using AIMoba.Models;
 using System.Collections.Generic;
 using AIMoba.Logic;
+using System;
 
 namespace AIMoba.Data
 {
@@ -76,6 +77,49 @@ namespace AIMoba.Data
                 }
             }
             return null;
+        }
+
+        public double GetDifScore()
+        {
+            int min = 100000, max = -100000;
+            var dao = new UserDAOService();
+            foreach(var player in players.Values)
+            {
+                int s = dao.FindUserByName(player.ID).Score;
+                if(s < min)
+                {
+                    min = s;
+                }
+                if (s > max)
+                {
+                    max = s;
+                }
+            }
+            return max-min;
+        }
+
+        public void UpdateScores(string winnerName)
+        {
+            // Rn = Ro + K(W - We)
+            // We = 1 / (exp10(-dr / 400) + 1)
+            var dao = new UserDAOService();
+            double avg = this.GetDifScore();
+            double add = 32 * (1 - (1 / (Math.Pow(10, -avg / 400) + 1)));
+            double lose = 32 * (-(1 / (Math.Pow(10, -avg  / 400) + 1)));
+            int newScore = (int)Math.Round(dao.FindUserByName(winnerName).Score + add);
+            dao.UpdateScore(winnerName, newScore);
+
+            foreach(var p in players.Values)
+            {
+                if (!p.IsComputer)
+                {
+                    if(p.ID != winnerName)
+                    {
+                        newScore = (int)Math.Round(dao.FindUserByName(p.ID).Score + lose);
+                        dao.UpdateScore(p.ID, newScore);
+                    }
+                }
+            }
         }
 
         // vissza adja a játékosok számát

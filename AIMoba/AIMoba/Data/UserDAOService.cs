@@ -12,6 +12,10 @@ namespace AIMoba.Data
     {
         public User Register(string name, string password)
         {
+            if (name.StartsWith("Robot"))
+            {
+                return null;
+            }
             using (UserContext db = new UserContext())
             {
                 if (!db.Users.Select(u => u.Name).Contains(name))
@@ -51,6 +55,19 @@ namespace AIMoba.Data
             {
                 db.Users.RemoveRange(FindAll());
                 db.SaveChanges();
+            }
+        }
+
+        public void UpdateScore(string name, int newScore)
+        {
+            using(var db = new UserContext())
+            {
+                var current = db.Users.FirstOrDefault(u => u.Name == name);
+                if(current != null)
+                {
+                    current.Score = newScore;
+                    db.SaveChanges();
+                }
             }
         }
         public User FindUserById(int id)

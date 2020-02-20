@@ -336,7 +336,7 @@ namespace Logika
             }
 
         }
-
+        /*
        Az AI függvény először minden üres cellának ad egy értéket hasznosság alapján,
        majd ezekből az értékekből választja ki a legjobb lehetőséget.
        */
