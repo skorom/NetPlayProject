@@ -46,7 +46,7 @@ namespace AIMoba.Controllers
             return all;
         }
 
-        public IActionResult CreateRoom(string roomName){
+        public IActionResult CreateRoom(string roomname){
             
             ViewBag.name = roomName; // a játákos neve
             return View();
@@ -63,6 +63,7 @@ namespace AIMoba.Controllers
             }
             else 
             {
+                //TODO: alert hogy van ilyen szoba
                 return RedirectToAction("Lobby","Home"); //ez csak egy random valami hogy legyen returnolva valami
             }
 
