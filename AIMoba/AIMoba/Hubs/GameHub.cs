@@ -43,7 +43,7 @@ namespace AIMoba.Hubs
 
                                 if (current.isGameOver(robotMove))
                                 {
-                                    await Clients.Group(roomName).SendAsync("GameEnded", players[Context.ConnectionId]);
+                                    await Clients.Group(roomName).SendAsync("GameEnded", "Robot");
                                     return;
                                 }
 
