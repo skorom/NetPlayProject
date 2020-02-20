@@ -23,6 +23,7 @@ namespace AIMoba.Logic
         {
             int testx = x, testy = y, borderx = 0, bordery = 0;
             int sum = 0;
+            int temp = 0;
             int[] testdirx = { 0, 0, 1, -1, -1, 1, 1, -1 };
             int[] testdiry = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
@@ -75,6 +76,18 @@ namespace AIMoba.Logic
                 testx = x;
                 testy = y;
             }
+            temp = 0;
+            for (int i = 0; i < table.Height; i++)
+            {
+                for (int j = 0; j < table.Width; j++)
+                {
+                    if (table[i, j] != FieldState.None)
+                    {
+                        temp++;
+                    }
+                }
+            }
+            if (temp == table.Height * table.Width) { return true; }            
 
             return false;
         }
