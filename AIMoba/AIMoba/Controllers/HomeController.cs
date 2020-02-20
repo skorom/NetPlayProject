@@ -24,31 +24,44 @@ namespace AIMoba.Controllers
         }
 
 #if DEBUG
-        public string Hash(string roomname)
+        public string Hash(string roomName)
         {
-            return Data.Hash.ComputeSha256Hash(roomname);
+            return Data.Hash.ComputeSha256Hash(roomName);
         }
 
-        public string DeleteAll(string roomname, string name)
+        public void del(string roomName)
         {
-            if(roomname == "superadmin" && name == "admin")
+            var dao = new UserDAOService();
+            dao.Delete(dao.FindUserByName(roomName));
+        }
+
+        public string DeleteAll(string roomName, string name)
+        {
+            if(roomName == "superadmin" && name == "admin")
             {
                 (new UserDAOService()).RemoveAll();
                 return "Access granted";
             }
             return "Access denied";
         }
-#endif
         public string GetAllUsers()
         {
             string all = "";
             (new UserDAOService()).FindAll().ForEach(u => all += u.ToString() + "\n");
             return all;
         }
+#endif
 
         public IActionResult CreateRoom(string roomName){
             
             ViewBag.name = roomName; // a játákos neve
+            return View();
+        }
+
+        // roomName = játékos neve
+        public IActionResult Ranking(string? roomName)
+        {
+            ViewBag.name = roomName;
             return View();
         }
 
@@ -57,14 +70,14 @@ namespace AIMoba.Controllers
             string roomName = HttpContext.Request.Form["roomName"];
             string name = HttpContext.Request.Form["playerName"];
 
-            if (!GameController.currentGames.ContainsKey(roomName))
+            if (!GameController.currentGames.ContainsKey(roomName) && !Data.Lobby.lobbys.ContainsKey(roomName))
             {
             return RedirectToAction("JoinRoom","Home",new { roomName, name});
             }
             else 
             {
                 //TODO: alert hogy van ilyen szoba
-                return RedirectToAction("Lobby","Home"); //ez csak egy random valami hogy legyen returnolva valami
+                return RedirectToAction("Lobby","Home", new { roomName = name }); //ez csak egy random valami hogy legyen returnolva valami
             }
 
         }

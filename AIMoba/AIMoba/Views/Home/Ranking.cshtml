@@ -1,0 +1,50 @@
+﻿@{
+    var users = (new AIMoba.Data.UserDAOService()).FindAll();
+    users.Sort((u1, u2) => u2.Score - u1.Score);
+    int rank = 1;
+
+}
+<link type="text/css" rel="stylesheet" href="~/css/custom-joinroom-stiles.css"/>
+<div class="d-flex align-items-start justify-content-center w-100">
+    <table id="players" class="table w-100 table-striped table-hover ">
+        <tr>
+            <th>Helyezés</th>
+            <th>Név</th>
+            <th>Pontszám</th>
+        </tr>
+        @if (users != null)
+        {
+            <tr>
+                <td>@rank</td>
+                <td>@users[0].Name</td>
+                <td>@users[0].Score</td>
+            </tr>
+
+            @for (int i = 1; i < users.Count; i++)
+            {
+
+                if (users[i].Score != users[i - 1].Score)
+                {
+                    rank++;
+                }
+
+                if (ViewBag.name == users[i].Name)
+                {
+                    <tr class="bg-secondary">
+                        <td>@rank</td>
+                        <td>@users[i].Name</td>
+                        <td>@users[i].Score</td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td>@rank</td>
+                        <td>@users[i].Name</td>
+                        <td>@users[i].Score</td>
+                    </tr>
+                }
+            }
+        }
+    </table>
+</div>

@@ -44,6 +44,7 @@ namespace AIMoba.Hubs
                                 if (current.isGameOver(robotMove))
                                 {
                                     GameController.currentGames.Remove(roomName);
+                                    GameController.currentGames[roomName].UpdateScores(players[Context.ConnectionId]);
                                     await Clients.Group(roomName).SendAsync("GameEnded", "Robot");
                                     return;
                                 }
@@ -53,6 +54,8 @@ namespace AIMoba.Hubs
                         }
                         else // A játéknak vége van
                         {
+                            
+                            GameController.currentGames[roomName].UpdateScores(players[Context.ConnectionId]);
                               GameController.currentGames.Remove(roomName);
                               await Clients.Group(roomName).SendAsync("GameEnded", players[Context.ConnectionId]);
                         }
