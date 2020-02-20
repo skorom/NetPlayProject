@@ -131,7 +131,6 @@ namespace AIMoba.Hubs
                 PlayerModel current = Lobby.lobbys[roomName].FirstOrDefault(p => p.Name == name);
                 if (current != null)
                 {
-                    Lobby.lobbys[roomName].Remove(current);
                     if (current.Role != PlayerRights.Robot && current.Role != PlayerRights.Tulajdonos)
                     {
                         await Groups.RemoveFromGroupAsync(nameToConnection[name], roomName);
@@ -139,6 +138,7 @@ namespace AIMoba.Hubs
                     }
                     if (current.Role != PlayerRights.Tulajdonos)
                     {
+                        Lobby.lobbys[roomName].Remove(current);
                         await Clients.Group(roomName).SendAsync("DeletePlayer", name);
                     }
                     else
@@ -157,38 +157,9 @@ namespace AIMoba.Hubs
                 }
 
             }
-            else if (Lobby.invitations.ContainsKey(name))
-            {
-                if (Lobby.invitations[name].Contains(roomName))
-                {
-                    Lobby.invitations[name].Remove(roomName);
-                    await Clients.Group(roomName).SendAsync("DeletePlayer", name);
-                }
-            }
 
         }
 
-        private async Task DeletePlayer(string name, string roomName)
-        {
-            if (Lobby.lobbys.ContainsKey(roomName))
-            {
-                PlayerModel current = Lobby.lobbys[roomName].FirstOrDefault(p => p.Name == name);
-                if (current != null)
-                {
-                    Lobby.lobbys[roomName].Remove(current);
-                    if (current.Role != PlayerRights.Robot)
-                    {
-                        await Groups.RemoveFromGroupAsync(nameToConnection[name], roomName);
-                        await Clients.Client(nameToConnection[name]).SendAsync("kick");
-                    }
-
-                    await Clients.Group(roomName).SendAsync("DeletePlayer", name);
-
-                }
-
-            }
-
-        }
 
         public async Task AddRobot(string roomName)
         {
@@ -272,7 +243,6 @@ namespace AIMoba.Hubs
                     await Clients.Client(Context.ConnectionId).SendAsync("AddPlayer", Lobby.lobbys[roomName][0].Stringify());
                 }
             });
-
         }
 
         // Kész státuszra váltás
@@ -323,6 +293,33 @@ namespace AIMoba.Hubs
             }
         }
 
+        private async Task DeleteDiscLobby(string name, string roomName)
+        {
+            if (Lobby.lobbys.ContainsKey(roomName))
+            {
+                PlayerModel current = Lobby.lobbys[roomName].FirstOrDefault(p => p.Name == name);
+                if (current != null)
+                {
+                    Lobby.lobbys[roomName].Remove(current);
+                    if (current.Role != PlayerRights.Robot)
+                    {
+                        await Groups.RemoveFromGroupAsync(nameToConnection[name], roomName);
+                        await Clients.Client(nameToConnection[name]).SendAsync("kick");
+                    }
+
+                    await Clients.Group(roomName).SendAsync("DeletePlayer", name);
+
+                    int numberOfRobots = Lobby.lobbys[roomName].Where(p => p.Role == PlayerRights.Robot).Count();
+                    if(numberOfRobots == Lobby.lobbys[roomName].Count)
+                    {
+                        Lobby.lobbys.Remove(roomName);
+                    }
+                }
+
+            }
+
+        }
+
         // Ha a kapcsolat megszakad akkor legyen törölve a név id kapcsolat
         public override async Task OnDisconnectedAsync(Exception exception)
         {
@@ -330,7 +327,7 @@ namespace AIMoba.Hubs
             var room = Lobby.lobbys.FirstOrDefault(r => r.Value.Where(p => p.Name == playerName).Count() > 0);
             if(room.Key != null)
             {
-                await DeletePlayer(playerName, room.Key);
+                await DeleteDiscLobby(playerName, room.Key);
                 await Groups.RemoveFromGroupAsync(Context.ConnectionId, room.Key);
             }
 
