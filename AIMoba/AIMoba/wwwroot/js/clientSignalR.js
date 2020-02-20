@@ -39,6 +39,7 @@ connection.on("WaitForMove", (pos, mark) => {
 
 connection.on("GameEnded", (name) => {
     let myname = document.getElementById("name").innerText;
+    document.getElementById("backButton").style.visibility = "visible";
 
     canvas.removeEventListener('click', handlePlayerInput);
 

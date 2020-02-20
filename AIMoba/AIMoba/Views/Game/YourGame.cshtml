@@ -15,6 +15,6 @@
     <div class="col-3">
         <input hidden id="name" name="name" type="text" value="@ViewBag.name" visible="false"/>
         <input hidden id="roomName" name="roomName" type="text" value="@ViewBag.roomName" visible="false"/>
-        <input asp-controller="Home" asp-action="RedirectToJoinRoomFromGame" class="w-100 btn btn-lg btn-block mx-0" type="submit" value="Vissza a szobába" />
+        <a href="@Url.Action("Lobby", "Home", new {roomName = ViewBag.name})" name="backButton" id="backButton"  class="btn btn-danger p-2 mb-2 mw-75" style="visibility:hidden">Vissza a lobbyba</a>
     </div>
     </form>
