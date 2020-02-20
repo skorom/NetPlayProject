@@ -77,3 +77,63 @@ a{
         background-color: #03e9f4;
         color: #000;
     }
+
+label {
+    color: #03e9f4;
+    font-size: 20px;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: bold !important;
+    letter-spacing: 1px;
+}
+
+textarea {
+    width: 100%;
+    background: #000;
+    border: 2px solid #03e9f4;
+    color: #03e9f4 !important;
+}
+button{
+    position: relative;
+    display: inline-block;
+    background-color: black;
+    outline: none;
+    padding: 20px 20px;
+    margin: 40px 0;
+    color: #03e9f4 !important;
+    font-size: 18px;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: 0.5s;
+    font-weight: bold !important;
+    letter-spacing: 3px;
+    border-radius: 20px;
+}
+
+    button:hover{
+        background-color: #03e9f4 !important;
+        color: #050801;
+        box-shadow: 0 0 10px #03e8f48e, 0 0 25px #03e8f48e;
+    }
+
+    button.form-control:focus{
+        background: #005f8b !important;
+        border: 2px solid #005f8b !important;
+        outline: 0px;
+        box-shadow: 0 0 5px #fff, 0 0 15px #00acfc, 0 0 20px #00acfc, 0 0 40px #00acfc;
+    }
+
+input {
+    border: 3px solid #03e9f4 !important;
+    background: black !important;
+    color: dimgray;
+}
+
+    input:hover {
+        box-shadow: 0 0 5px #000, 0 0 10px #000, 0 0 20px #03e9f4;
+    }
+
+    input.form-control:focus {
+        box-shadow: 0 0 5px #000, 0 0 10px #000, 0 0 20px #03e9f4, 0 0 35px #03e9f4;
+        border: 0.2em solid #03e9f4;
+    }
