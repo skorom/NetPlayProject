@@ -46,7 +46,7 @@ namespace AIMoba.Controllers
             return all;
         }
 
-        public IActionResult CreateRoom(string roomname){
+        public IActionResult CreateRoom(string roomName){
             
             ViewBag.name = roomName; // a játákos neve
             return View();

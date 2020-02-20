@@ -51,9 +51,9 @@ connection.on("GameEnded", (name) => {
     }
 
     if (name == myname) {
-        endPicture.src = '/images/gamewon.svg';
+        endPicture.src = '/images/gamewon.png';
     } else {
-        endPicture.src = '/images/gamelost.svg';
+        endPicture.src = '/images/gamelost.png';
     }
 
     endPicture.width = canvas.width;
