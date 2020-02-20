@@ -48,7 +48,7 @@ namespace AIMoba.Data
         private void CalculateTurns()
         {
             int turnIndex = 0;
-            var keys = players.Keys;
+            List<string> keys = new List<string>(players.Keys);
             foreach(var key in keys)
             {
                 if (!players[key].IsComputer)
