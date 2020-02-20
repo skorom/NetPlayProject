@@ -1,23 +1,45 @@
 body {
-    background: #47a2dd;
+    background: #000;
 }
 
-th {
-    font-weight: bold;
+th, td {
+    color: #03e9f4;
+    font-size: 10px;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: bold !important;
+    letter-spacing: 1px;
 }
 
 .custom-glowing-title {
-    font-weight: bold;
-    text-shadow: .1rem .2rem .05rem black;
-    color: #001aeb;
+    font-size: 60px;
+    color: #fff;
+    text-align: center;
     text-transform: uppercase;
+    animation: pislakol 10s infinite;
+    font-weight: bolder;
+}
+
+@keyframes pislakol {
+    0% {
+        text-shadow: 0 0 5px #fff, 0 0 10px #03e9f4
+    }
+
+    50% {
+        text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #03e9f4, 0 0 30px #03e9f4, 0 0 40px #03e9f4, 0 0 55px #03e9f4
+    }
+
+    100% {
+        text-shadow: 0 0 5px #fff, 0 0 10px #03e9f4
+    }
 }
 
 .custom-label {
-    color: black;
+    color: #fff;
     font-weight: bold;
     text-shadow: 0 0 .8vw grey;
     font-size: large;
+    text-shadow: 0 0 5px #fff, 0 0 20px #03e9f4;
 }
 
 #players tr td:nth-child(5),
@@ -49,18 +71,57 @@ th {
     margin: 1rem;
 }
 
-#add-player-prompt > * {
-    margin: 1rem;
+    #add-player-prompt > * {
+        margin: 1rem;
+    }
+
+#back-cover {
+    visibility: hidden;
+    z-index: 1000;
+    width: 100vw;
+    height: 100vh;
+    background: #060606;
+    opacity: 0.8;
+    position: fixed;
+    top: 0;
+    left: 0;
 }
 
-    #back-cover {
-        visibility: hidden;
-        z-index: 1000;
-        width: 100vw;
-        height: 100vh;
-        background: #060606;
-        opacity: 0.8;
-        position: fixed;
-        top: 0;
-        left: 0;
-    }
+input {
+    position: relative;
+    display: inline-block;
+    background-color: black;
+    outline: none;
+    padding: 20px 20px;
+    margin: 40px 0;
+    color: #03e9f4;
+    font-size: 18px;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: 0.5s;
+    font-weight: bold !important;
+    letter-spacing: 3px;
+    border-radius: 20px;
+    border: 2px solid #03e9f4;
+}
+
+h3 {
+    color: #000;
+}
+
+button {
+    color: #fff !important;
+    font-weight: bold !important;
+    text-shadow: 0 0 .8vw grey;
+    font-size: large;
+    text-shadow: 0 0 5px #fff, 0 0 20px #03e9f4;
+    background: #000;
+    border:hidden;
+}
+a {
+    color: #fff !important;
+    font-weight: bold !important;
+    text-shadow: 0 0 .8vw grey;
+    font-size: large;
+    text-shadow: 0 0 5px #fff, 0 0 20px #03e9f4;
+}

@@ -46,7 +46,7 @@ class Record {
         <td>${this.role}</td>
         <td>${this.status}</td>
         <td id="${this.id}" class="mx-0 px-0 clearfix">
-            <button class="d-flex justify-content-center align-items-center btn btn-danger h-auto" onClick="removePlayer(${this.id})" >X</button>
+            <button class="d-flex justify-content-center align-items-center h-auto" onClick="removePlayer(${this.id})" >X</button>
         </td>
         `;
     } 
