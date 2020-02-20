@@ -1,0 +1,84 @@
+* {
+  font-family: url("https://www.jsdelivr.com/package/npm/futura-font");
+}
+
+.title {
+  font-size: 60px;
+  color: #fff;
+  text-align: center;
+  text-transform: uppercase;
+  animation: pislakol 10s infinite;
+  font-weight: bolder;
+}
+
+body {
+  background: black;
+}
+
+label {
+  color: #03e9f4;
+  font-size: 10px;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-weight: bold !important;
+  letter-spacing: 1px;
+}
+
+input {
+  border: 3px solid #03e9f4 !important;
+  background: black !important;
+}
+
+input:hover {
+  box-shadow: 0 0 5px #000, 0 0 10px #000, 0 0 20px #03e9f4;
+}
+
+input.form-control:focus {
+  box-shadow: 0 0 5px #000, 0 0 10px #000, 0 0 20px #03e9f4, 0 0 35px #03e9f4;
+  border: 0.2em solid #03e9f4;
+}
+
+@keyframes pislakol {
+  0% {
+    text-shadow: 0 0 5px #fff, 0 0 10px #03e9f4
+  }
+
+  50% {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #03e9f4, 0 0 30px #03e9f4,
+      0 0 40px #03e9f4, 0 0 55px #03e9f4
+  }
+
+  100% {
+    text-shadow: 0 0 5px #fff, 0 0 10px #03e9f4
+  }
+}
+
+button, input[type="submit"] {
+  position: relative;
+  display: inline-block;
+  background-color: black;
+  outline: none;
+  padding: 20px 20px;
+  margin: 40px 0;
+  color: #03e9f4;
+  font-size: 18px;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: 0.5s;
+  font-weight: bold !important;
+  letter-spacing: 3px;
+  border-radius: 20px;
+}
+
+    button:hover, input[type="submit"]:hover {
+        background-color: #03e9f4 !important;
+        color: #050801;
+        box-shadow: 0 0 10px #03e8f48e, 0 0 25px #03e8f48e;
+    }
+
+    button.form-control:focus, input[type="submit"]:focus {
+        background: #005f8b !important;
+        border: 2px solid #005f8b !important;
+        outline: 0px;
+        box-shadow: 0 0 5px #fff, 0 0 15px #00acfc, 0 0 20px #00acfc, 0 0 40px #00acfc;
+    }

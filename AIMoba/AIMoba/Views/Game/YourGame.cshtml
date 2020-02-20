@@ -1,0 +1,20 @@
+﻿<link type="text/css" rel="stylesheet" href="~/css/design.css" />
+    <form asp-controller="Home"  method="post">
+    <div class="row">
+        <div class="col-8">
+            <canvas id="myCanvas" width="520" height="520">
+            </canvas>
+        </div>
+    </div>
+    <p hidden id="name">@ViewBag.name</p>
+    <p hidden id="roomName">@ViewBag.roomName</p>
+
+    <script src="~/js/grid.js"></script>
+    <script src="~/js/main.js"></script>
+    <script src="~/js/clientSignalR.js"></script>
+    <div class="col-3">
+        <input hidden id="name" name="name" type="text" value="@ViewBag.name" visible="false"/>
+        <input hidden id="roomName" name="roomName" type="text" value="@ViewBag.roomName" visible="false"/>
+        <a href="@Url.Action("Lobby", "Home", new {roomName = ViewBag.name})" name="backButton" id="backButton"  class="btn btn-danger p-2 mb-2 mw-75" style="visibility:hidden">Vissza a lobbyba</a>
+    </div>
+    </form>

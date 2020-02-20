@@ -8,6 +8,8 @@ using Microsoft.Extensions.Logging;
 using AIMoba.Models;
 using AIMoba.Data;
 using AIMoba.Logic;
+using AIMoba.Hubs;
+using Microsoft.EntityFrameworkCore;
 
 namespace AIMoba.Controllers
 {
@@ -15,69 +17,134 @@ namespace AIMoba.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        // a játékok eltárolása
-        private static Dictionary<int, Game> dictionary = new Dictionary<int, Game>();
+        private UserDAOService UserDAOService = new UserDAOService();
         public HomeController(ILogger<HomeController> logger)
         {
-            _logger = logger;
+
         }
-        // automatikus kiosztása a játék és játékos idk-nek
-        public IActionResult Index(int gameID=0, int playerID=0)
+
+#if DEBUG
+        public string Hash(string roomname)
         {
-            if (gameID == 0)
-            {
-                gameID = dictionary.Count + 1;
-                dictionary.Add(gameID, new Game(gameID));
-                return RedirectToAction("index", "home", new { gameID = gameID });
-            }
+            return Data.Hash.ComputeSha256Hash(roomname);
+        }
 
-            
-            if (playerID == 0)
+        public string DeleteAll(string roomname, string name)
+        {
+            if(roomname == "superadmin" && name == "admin")
             {
-                playerID = dictionary[gameID].NumberOfPlayers() + 1;
-                dictionary[gameID].AddPlayer(playerID);
-                return RedirectToAction("index", "home", new { gameID = gameID, playerID = playerID });
+                (new UserDAOService()).RemoveAll();
+                return "Access granted";
             }
+            return "Access denied";
+        }
+#endif
+        public string GetAllUsers()
+        {
+            string all = "";
+            (new UserDAOService()).FindAll().ForEach(u => all += u.ToString() + "\n");
+            return all;
+        }
 
+        public IActionResult CreateRoom(string roomName){
             
+            ViewBag.name = roomName; // a játákos neve
             return View();
         }
 
-        //egy lépés request fogadása
-        [HttpPost]
-        public async Task<Message> MakeMove([FromBody] RequestData data)
+        public IActionResult MakeRoom()
         {
-            // az üzenet melyet majd visszaküld a frontend nek
-            Message message = new Message();
-            //Jelenlegi játék meghatározása
-            Game currentGame;
-            if (dictionary.ContainsKey(data.GameID))
+            string roomName = HttpContext.Request.Form["roomName"];
+            string name = HttpContext.Request.Form["playerName"];
+
+            if (!GameController.currentGames.ContainsKey(roomName))
             {
-                currentGame = dictionary[data.GameID];
+            return RedirectToAction("JoinRoom","Home",new { roomName, name});
+            }
+            else 
+            {
+                return RedirectToAction("Lobby","Home"); //ez csak egy random valami hogy legyen returnolva valami
+            }
+
+        }
+
+        public IActionResult RedirectToJoinRoom()
+        {
+            string roomName = HttpContext.Request.Form["roomName"];
+            string name = HttpContext.Request.Form["playerName"];
+            if (Data.Lobby.invitations.ContainsKey(name))
+            {
+                if (Data.Lobby.invitations[name].Contains(roomName))
+                {
+                    return RedirectToAction("JoinRoom", "Home", new { roomName, name});
+                }
+            }
+            return RedirectToAction("Lobby", "Home", new { roomName=name});
+        }
+
+        public IActionResult RedirectToJoinRoomFromGame()
+        {
+            string roomName = HttpContext.Request.Form["roomName"];
+            string name = HttpContext.Request.Form["name"];
+
+            return RedirectToAction("JoinRoom", "Home", new { roomName, name });
+        }
+
+        public IActionResult JoinRoom(string roomName, string name){
+            ViewBag.roomName = roomName;
+            ViewBag.name = name;
+            if (Data.Lobby.lobbys.ContainsKey(roomName))
+            {
+                return View(AIMoba.Data.Lobby.lobbys[roomName]);
             }
             else
             {
-                return null;
+                return View(null);
             }
-            // lépés feldolgozása
-            bool success = currentGame.Update(data,message);
-            // visszatérési adatok létrehozása
-            if (success)
-            {
-                message.ResponsMessage = true;
-                message.Data.Add(new Move(data.position, currentGame.players[data.PlayerID].Mark));
+        }
 
+        public IActionResult Lobby(string roomName)
+        {
+            ViewBag.name = roomName;
+            return View();
+        }
+        public IActionResult RedirectToLobby()
+        {
+            string name = HttpContext.Request.Form["name"];
+            string password = HttpContext.Request.Form["password"]; 
+
+            if (UserDAOService.Authenticate(name, password))
+            {
+                return RedirectToAction("Lobby", "Home", new { roomName = name });
+            }
+            else {
+                return RedirectToAction("Login", "Home");
+            }
+        }
+
+        public IActionResult RedirectToLogin()
+        {
+            string name = HttpContext.Request.Form["name"];
+            string password = HttpContext.Request.Form["password"]; 
+            User currentUser = UserDAOService.Register(name, password);
+            if (currentUser!=null)
+            {
+                return RedirectToAction("Login", "Home"); 
             }
             else
             {
-                message.ResponsMessage = false;
+                return RedirectToAction("Error", "Home");
             }
-            if (!message.EndOfGame&&currentGame.Steps >= currentGame.grid.Width * currentGame.grid.Height)
-            {
-                message.EndState = 0; // TODO: endofgame függvény beépítése
+        }
 
-            }
-            return message;
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        public IActionResult Register()
+        {
+            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

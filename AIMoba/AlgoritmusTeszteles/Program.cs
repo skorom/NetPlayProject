@@ -1,6 +1,8 @@
+
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Numerics;
 
 namespace Logika
 {
@@ -83,11 +85,20 @@ namespace Logika
 
     }
 
+
+    public class Cells
+    {
+        public int value;
+        public int x;
+        public int y;
+    }
+
     class Program
     {
 
         static void Main(string[] args)
         {
+
             GridModel table = new GridModel(20, 20);
             int players, px, py;
             bool end = false;
@@ -126,7 +137,8 @@ namespace Logika
                             CPU = FieldState.PlayerFour;
                             break;
                     }
-                    AI(table, CPU, ref px, ref py);
+                  
+                    AI(table, CPU, ref px, ref py, players);
                     table.MakeMove(px, py, CPU);
                     end = GameEnd(table, px, py, 5);
                 }
@@ -325,6 +337,136 @@ namespace Logika
 
         }
 
+       Az AI függvény először minden üres cellának ad egy értéket hasznosság alapján,
+       majd ezekből az értékekből választja ki a legjobb lehetőséget.
+       */
+        static void AI(GridModel table, FieldState CPU, ref int aix, ref int aiy, int players)
+        {
+            int[,] valuesTable = new int[table.Height, table.Width];
+
+            getValues(table, valuesTable, players);
+
+            int tempMax = 0;
+            List<Cells> bestValues = new List<Cells>();
+            Random rnd = new Random();
+            int random=0;            
+
+            for (int x = 0; x < table.Height; x++)
+            {
+                for (int y = 0; y < table.Width; y++)
+                {
+                    if (valuesTable[x, y] >= tempMax)
+                    {
+                        tempMax = valuesTable[x, y];
+                    }
+                }
+            }
+            for (int x = 0; x < table.Height; x++)
+            {
+                for (int y = 0; y < table.Width; y++)
+                {
+                    if (valuesTable[x, y] == tempMax)
+                    {                        
+                        bestValues.Add(new Cells { value = tempMax, x = x, y = y });                        
+                    }
+                }
+            }            
+            random = rnd.Next(0, bestValues.Count-1);       
+            aix = bestValues[random].x;
+            aiy = bestValues[random].y;
+
+        }
+        //A getValues() függvény minden üres cellának ad egy értéket.
+        
+        static void getValues(GridModel table, int[,] valuesTable, int players)
+        {
+            int tempValue=0, tempMaxValue=0;
+            int currentX = 0, currentY = 0;
+            FieldState checkedState = FieldState.None;
+            FieldState[] playerFieldStates = {FieldState.PlayerOne, FieldState.PlayerTwo, FieldState.PlayerThree, FieldState.PlayerFour};
+
+            for (int x = 0; x < table.Height; x++)
+            {
+                for (int y = 0; y < table.Width; y++)
+                {
+                    if (table[x, y] == FieldState.None)
+                    {
+                        tempMaxValue = 0;
+                        for (int i = 0; i < players; i++)
+                        {
+                            currentX = x;
+                            currentY = y;
+                            checkedState=playerFieldStates[i];
+                            tempValue=cellValue(table,currentX,currentY,checkedState);
+
+                            if(tempValue>tempMaxValue)
+                            {
+                                tempMaxValue=tempValue;
+                            }
+                        }
+                        valuesTable[x,y]=tempMaxValue;
+                    }
+                }
+            }
+        }
+        //A cellValue() függvény egy cellának adja meg az értékét.
+        static int cellValue(GridModel table, int currentX, int currentY, FieldState checkedState)
+        {
+            int[] directionsX = { 0, 0, 1, -1, -1, 1, 1, -1 };
+            int[] directionsY = { 1, -1, 0, 0, 1, -1, 1, -1 };
+            int sumX = 0, sumY = 0;
+            int sum = 0;
+            int maxValue = 0;
+            
+            for (int i = 0; i < 8; i++)
+            {                
+                sumX = currentX;
+                sumY = currentY;
+
+                do
+                {
+                    if ((sumX + directionsX[i]) >= 0 && (sumY + directionsY[i]) >= 0 && (sumX + directionsX[i]) <= 19 && (sumY + directionsY[i]) <= 19)
+                    {
+                        if (table[sumX + directionsX[i], sumY + directionsY[i]] == checkedState)
+                        {
+                            sum++;
+                            sumX += directionsX[i];
+                            sumY += directionsY[i];
+                        }
+                        else
+                        {
+                            break;
+                        }
+
+                    }
+                    else
+                    {                       
+                        break;
+                    }                    
+
+                } while (sum != 5);
+                if (i % 2 == 0)
+                {
+                    if (sum > maxValue)
+                    {
+                        maxValue = sum;
+                    }
+                    sum = 0;
+                }
+                if (i == 7)
+                {
+                    if (sum > maxValue)
+                    {
+                        maxValue = sum;
+                    }
+                    sum = 0;
+                }
+
+            }
+
+            return maxValue;
+        }
+       
         /*
         A GameEnd függyvény megvizsgálja a beérkező x, y pozíciók alapján, hogy a lépést végrehajtó játékosnak összegyűlt-e a szükséges mennyiségű szomszédos lépése.
         Igaz értéket ad vissza ha összegyűlt, tehát a játéknak vége.

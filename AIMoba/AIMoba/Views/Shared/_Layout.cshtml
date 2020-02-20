@@ -7,27 +7,12 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" type="text/css" href="~/css/stilus.css" />
+    <link rel="stylesheet" href="~/css/vanillatoasts.css" />
+    <script src="~/js/dist/browser/vanillatoasts.js" defer></script>
 </head>
 <body>
-    <section id="wrapper">
-        <nav>
-            <ul>
-                <li>
-                    <a class="dropdown" href="">New game</a>
-                    <ul>
-                        <li><a href="">1 player</a></li>
-                        <li><a href="">2 player</a></li>
-                        <li><a href="">Multiplayer</a></li>
-                    </ul>
-                </li>
-                <li><a href="">(elso)</a></li>
-
-                <li><a href="">(masodik)</a></li>
-                <li><a href="">Your rank</a></li>
-                <li><a href="">Rules of the game</a></li>
-            </ul>
-        </nav>
-    </section>
+    <script src="~/js/dist/browser/signalr.js"></script>
+    
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -37,9 +22,8 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/main.js"></script>
-    <script src="~/js/grid.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
     @RenderSection("Scripts", required: false)
 </body>
 </html>

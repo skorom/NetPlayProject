@@ -1,41 +1,29 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace AIMoba.Data
 {
-    // ezek a classok a kommunikációt seggíttik a frontend és backend között
-    public class Message
-    {
-        // az üzenet "success" vagy "failed"
-        public bool ResponsMessage { get; set; }
-        // vége van e a játéknak
-        public bool EndOfGame { get; set; }
-        // milyen állás volt a tálán mikor végelett a játéknak
-        public int EndState { get; set; }
-        // a pozíció ahová a játékos lépni szeretne
-        public List<Move> Data { get; set; } = new List<Move>();
-    }
 
-    public class RequestData
+    public static class Hash
     {
-        public Position position { get; set; }
-        public int PlayerID { get; set; }
-        public int GameID { get; set; }
-    }
-
-    public class Move
-    {
-        public Move() { }
-        public Move(Position pos, FieldState mark)
+        public static string ComputeSha256Hash(string rawData)
         {
-            Pos = pos;
-            Mark = mark;
-        }
+            using (SHA256 sha256Hash = SHA256.Create())
+            {
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
 
-        public Position Pos { get; set; }
-        public FieldState Mark { get; set; }
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    builder.Append(bytes[i].ToString("x2"));
+                }
+                return builder.ToString();
+            }
+        }
     }
     public class Position
     {
