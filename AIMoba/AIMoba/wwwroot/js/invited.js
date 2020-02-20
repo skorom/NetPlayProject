@@ -27,7 +27,7 @@ connection.on("Invited", function (roomname) {
     (function(roomname) {
         VanillaToasts.create({
             title: 'Meghívás',
-            text: 'Meghívtak a ' + roomname + 'szobába',
+            text: 'Meghívtak a ' + roomname + ' szobába',
             type: 'success', // success, info, warning, error   / optional parameter
             timeout: 5000, // hide after 5000ms, // optional paremter
             callback: () => {

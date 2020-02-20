@@ -28,7 +28,7 @@ let States = {
 let Colors = {
     1: "red",           // PlayerOne
     2: "blue",          // PlayerTwo
-    3: "orange",        // PlayerThree
+    3: "#e4ed85",        // PlayerThree
     4: "darkMagenta"    // PlayerFour 
 };
 

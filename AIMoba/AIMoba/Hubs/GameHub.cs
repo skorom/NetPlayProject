@@ -37,7 +37,7 @@ namespace AIMoba.Hubs
                             Position lastmove = moveTo;
                             while (current.isRobotNext(lastmove))
                             {
-                                await Task.Delay(1000);
+                                await Task.Delay(500);
                                 Position robotMove = current.MoveRobot();
 
                                 await Clients.Group(roomname).SendAsync("WaitForMove", robotMove, current.LastMark);

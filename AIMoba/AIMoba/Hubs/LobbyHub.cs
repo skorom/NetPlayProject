@@ -318,7 +318,7 @@ namespace AIMoba.Hubs
                 }
                 else
                 {
-                    await Clients.Caller.SendAsync("Message", "Hiba!", "error", "Mindenkinek készen kell lennie a játék megkezdéséhez!");
+                    await Clients.Caller.SendAsync("Message", "Hiba!", "error", "Mindenkinek készen kell lennie a játék elindításához!");
                 }
             }
         }
