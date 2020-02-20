@@ -77,7 +77,8 @@ connection.on("DeletePlayer", (name) => {
 });
 
 connection.on("kick", () => {
-    window.location = "/Home/Lobby/" + document.getElementById("name").innerText;;
+    let name = document.getElementById("name").innerText;
+    window.location = "/Home/Lobby/" + name;;
 });
 
 // Kész állapotra váltás

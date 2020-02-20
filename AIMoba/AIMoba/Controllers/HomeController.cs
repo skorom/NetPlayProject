@@ -23,6 +23,29 @@ namespace AIMoba.Controllers
 
         }
 
+#if DEBUG
+        public string Hash(string roomname)
+        {
+            return Data.Hash.ComputeSha256Hash(roomname);
+        }
+
+        public string DeleteAll(string roomname, string name)
+        {
+            if(roomname == "superadmin" && name == "admin")
+            {
+                (new UserDAOService()).RemoveAll();
+                return "Access granted";
+            }
+            return "Access denied";
+        }
+#endif
+        public string GetAllUsers()
+        {
+            string all = "";
+            (new UserDAOService()).FindAll().ForEach(u => all += u.ToString() + "\n");
+            return all;
+        }
+
         public IActionResult CreateRoom(string roomname){
             
             ViewBag.name = roomname; // a játákos neve
@@ -34,7 +57,6 @@ namespace AIMoba.Controllers
             string roomName = HttpContext.Request.Form["roomName"];
             string name = HttpContext.Request.Form["playerName"];
 
-            GameController.currentGames.Add(roomName, new Game(roomName));
             return RedirectToAction("JoinRoom","Home",new { roomName, name});
         }
 
