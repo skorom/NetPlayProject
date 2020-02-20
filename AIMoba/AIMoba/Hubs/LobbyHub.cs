@@ -33,7 +33,7 @@ namespace AIMoba.Hubs
             });
         }
 
-        // [name] nevű játékos meghívása a [roomname] nevű szobába
+        // [name] nevű játékos meghívása a [roomName] nevű szobába
         public async Task InvitePlayer(string roomName, string name)
         {
             await Task.Run(async () =>

@@ -48,7 +48,7 @@ namespace AIMoba.Controllers
 
         public IActionResult CreateRoom(string roomname){
             
-            ViewBag.name = roomname; // a játákos neve
+            ViewBag.name = roomName; // a játákos neve
             return View();
         }
 
@@ -57,7 +57,15 @@ namespace AIMoba.Controllers
             string roomName = HttpContext.Request.Form["roomName"];
             string name = HttpContext.Request.Form["playerName"];
 
+            if (!GameController.currentGames.ContainsKey(roomName))
+            {
             return RedirectToAction("JoinRoom","Home",new { roomName, name});
+            }
+            else 
+            {
+                return RedirectToAction("Lobby","Home"); //ez csak egy random valami hogy legyen returnolva valami
+            }
+
         }
 
         public IActionResult RedirectToJoinRoom()
@@ -72,6 +80,14 @@ namespace AIMoba.Controllers
                 }
             }
             return RedirectToAction("Lobby", "Home", new { roomName=name});
+        }
+
+        public IActionResult RedirectToJoinRoomFromGame()
+        {
+            string roomName = HttpContext.Request.Form["roomName"];
+            string name = HttpContext.Request.Form["name"];
+
+            return RedirectToAction("JoinRoom", "Home", new { roomName, name });
         }
 
         public IActionResult JoinRoom(string roomName, string name){
@@ -95,7 +111,7 @@ namespace AIMoba.Controllers
         public IActionResult RedirectToLobby()
         {
             string name = HttpContext.Request.Form["name"];
-            string password = HttpContext.Request.Form["password"]; // TODO: hash
+            string password = HttpContext.Request.Form["password"]; 
 
             if (UserDAOService.Authenticate(name, password))
             {
@@ -109,7 +125,7 @@ namespace AIMoba.Controllers
         public IActionResult RedirectToLogin()
         {
             string name = HttpContext.Request.Form["name"];
-            string password = HttpContext.Request.Form["password"]; // TODO: hash
+            string password = HttpContext.Request.Form["password"]; 
             User currentUser = UserDAOService.Register(name, password);
             if (currentUser!=null)
             {

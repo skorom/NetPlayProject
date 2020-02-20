@@ -8,11 +8,11 @@ let connection = new signalR.HubConnectionBuilder()
 let endPicture = new Image();
 
 connection.start().then(function () {
-    let roomname = document.getElementById("roomname").innerText;
+    let roomName = document.getElementById("roomName").innerText;
     let myname = document.getElementById("name").innerText;
 
     console.log("feliratkozas");
-    connection.invoke("Subscribe", roomname, myname).catch(function (err) {
+    connection.invoke("Subscribe", roomName, myname).catch(function (err) {
         return console.error(err.toString());
     });
 }).catch(function (err) {
@@ -22,13 +22,13 @@ connection.start().then(function () {
 document.getElementById("myCanvas").addEventListener('click', handlePlayerInput);
 
 function handlePlayerInput(e) {
-    let roomname = document.getElementById("roomname").innerText;
+    let roomName = document.getElementById("roomName").innerText;
 
     let mousepos = getMousePos(e);
     let iPos = Math.floor(mousepos.y / cellSize);
     let jPos = Math.floor(mousepos.x / cellSize);
 
-    connection.invoke("Move", roomname, { IPos: iPos, JPos: jPos });
+    connection.invoke("Move", roomName, { IPos: iPos, JPos: jPos });
 }
 
 connection.on("WaitForMove", (pos, mark) => {
@@ -39,6 +39,7 @@ connection.on("WaitForMove", (pos, mark) => {
 
 connection.on("GameEnded", (name) => {
     let myname = document.getElementById("name").innerText;
+    document.getElementById("backButton").style.visibility = "visible";
 
     canvas.removeEventListener('click', handlePlayerInput);
 
@@ -57,4 +58,5 @@ connection.on("GameEnded", (name) => {
 
     endPicture.width = canvas.width;
     endPicture.height = canvas.height;
+
 });
