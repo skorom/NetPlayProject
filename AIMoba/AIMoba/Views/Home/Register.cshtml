@@ -1,23 +1,23 @@
 ﻿<link type="text/css" rel="stylesheet" href="~/css/design.css" />
 <form asp-controller="Home">
-    <div class="p-5"></div>
+    <div class="px-5 pb-5"></div>
     <div class="row mt-3">
         <div class="col-3"></div>
         <div class="col-6">
             <h1 class="title">Regisztrálj!</h1>
             <div class="mt-5">
                 <div class="form-group w-100">
-                    <label for="Email" class="mb-3">E-mail</label>
-                    <input type="text" id="email" class="form-control w-100" />
+                    <label for="Username" class="mb-3">Felhasználónév</label>
+                    <input type="text" id="name" name="name" class="form-control w-100" />
                 </div>
                 <div class="form-group row">
                     <div class="col-6">
-                        <label for="Username" class="my-3">Felhasználónév</label>
-                        <input type="text" id="name" class="form-control w-100" name="name" />
+                        <label for="password" class="my-3">Jelszó</label>
+                        <input type="password" id="password" class="form-control w-100" name="password" />
                     </div>
                     <div class="col-6">
-                        <label for="password" class="my-3">Jeszó</label>
-                        <input type="password" id="password" class="form-control w-100" name="password" />
+                        <label for="repassword" class="my-3">Jelszó újra</label>
+                        <input type="password" id="repassword" class="form-control w-100" name="repassword" />
                     </div>
                 </div>
             </div>

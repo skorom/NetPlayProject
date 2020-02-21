@@ -56,7 +56,7 @@ h1 {
 }
 
 a{
-    position: relative;
+    position: static;
     display: inline-block;
     background-color: black;
     outline: none;

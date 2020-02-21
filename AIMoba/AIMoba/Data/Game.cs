@@ -3,6 +3,7 @@ using AIMoba.Models;
 using System.Collections.Generic;
 using AIMoba.Logic;
 using System;
+using System.Linq;
 
 namespace AIMoba.Data
 {
@@ -85,7 +86,8 @@ namespace AIMoba.Data
             var dao = new UserDAOService();
             foreach(var player in players.Values)
             {
-                int s = dao.FindUserByName(player.ID).Score;
+                var p = dao.FindUserByName(player.ID);
+                int s = p==null?1000:p.Score;
                 if(s < min)
                 {
                     min = s;
@@ -106,8 +108,16 @@ namespace AIMoba.Data
             double avg = this.GetDifScore();
             double add = 32 * (1 - (1 / (Math.Pow(10, -avg / 400) + 1)));
             double lose = 32 * (-(1 / (Math.Pow(10, -avg  / 400) + 1)));
-            int newScore = (int)Math.Round(dao.FindUserByName(winnerName).Score + add);
-            dao.UpdateScore(winnerName, newScore);
+            int newScore;
+            if (players.ContainsKey(winnerName))
+            {
+                if(players[winnerName].IsComputer == false)
+                {
+                    newScore = (int)Math.Round(dao.FindUserByName(winnerName).Score + add);
+                    dao.UpdateScore(winnerName, newScore);
+
+                }
+            }
 
             foreach(var p in players.Values)
             {
@@ -128,6 +138,11 @@ namespace AIMoba.Data
             return players.Count;
         }
 
+        public List<string> GetKeysOfPlayers()
+        {
+            var tmp = new List<string>(players.Keys);
+            return tmp.Where(p => players[p].IsComputer == false).ToList();
+        }
         // kezeli az adat feldolgozását ( az adat a kontrollertől való ) 
         // visszatérési értéke akkor true ha a lépés szabályos és a saját körében történt
         public bool PlayerMove(string id, Position position)

@@ -23,46 +23,33 @@
 </div>
 
 <!-- Felugró ablak vége -->
-
-<div class="container">
-    <div class="text-center">
-        <h1 id="pName">Hello @ViewBag.name!</h1>
-        <div class="container text-center ">
-            <a href="@Url.Action("CreateRoom", "Home", new {roomName = ViewBag.name})" class="w-50 mb-3">
-                Játék létrehozása
-            </a>
-            <a href="@Url.Action("Ranking", "Home", new {roomName = ViewBag.name})" class="w-50 mb-3">
-                Ranklista
-            </a>
-            <a href="@Url.Action("Login", "Home") class="w-50 mb-3">
-                Kijelentkezés
-            </a>
+<div class="row">
+    <div class="col-8">
+        <div class="text-center d-flex align-content-center flex-column w-100">
+            <h1 id="pName">Hello @ViewBag.name!</h1>
+                <a href="@Url.Action("CreateRoom", "Home", new {roomName = ViewBag.name})" class="w-75 mx-auto mb-3">
+                    Játék létrehozása
+                </a>
+                <a href="@Url.Action("Ranking", "Home", new {roomName = ViewBag.name})" class="w-75 mx-auto mb-3">
+                    Ranglista
+                </a>
+                <a href="@Url.Action("Login", "Home")" class="w-75 mx-auto mb-3">
+                    Kijelentkezés
+                </a>
         </div>
     </div>
-</div>
 
-<div class="container">
-    <div class="row">&nbsp;</div>
-    <div class="row">
-        <div class="col-2"><label>Üzenet</label></div>
-        <div class="col-4"><input type="text" id="messageInput" /></div>
-    </div>
-    <div class="row">&nbsp;</div>
-    <div class="row">
-        <div class="col-6">
-            <input type="button" id="sendButton" value="Üzenet küldése" />
+    <div class="col-4">
+        <div class="mt-4 h-100 p-0">
+            <textarea readonly class="h-100 p-0" style="resize:none" id="messageList">"Üdvözöljük a group chat-en"</textarea>
         </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-12">
-        <hr />
-    </div>
-</div>
-<div class="row">
-    <div class="col-12">
-        <textarea readonly id="messageList">"Üdvözöljük a group chat-en"
-</textarea>
+        <div class="row">
+            <div class="col-10 pr-0">
+                <input type="text" class="w-100 pr-0" id="messageInput" />
+            </div>
+            <div class="col-2 pl-0">
+                <input class="w-100 pl-0" type="button" id="sendButton" value="-->" />
+            </div>
     </div>
 </div>
 <script src="~/js/chat.js"></script>

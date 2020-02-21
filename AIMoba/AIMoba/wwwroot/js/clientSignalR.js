@@ -60,3 +60,12 @@ connection.on("GameEnded", (name) => {
     endPicture.height = canvas.height;
 
 });
+
+connection.on("Message", (title, type, msg) => {
+    VanillaToasts.create({
+        title: title,
+        text: msg,
+        type: type, // success, info, warning, error   / optional parameter
+        timeout: 3500
+    });
+});

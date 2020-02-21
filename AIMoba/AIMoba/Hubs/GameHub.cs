@@ -43,8 +43,15 @@ namespace AIMoba.Hubs
 
                                 if (current.isGameOver(robotMove))
                                 {
+                                    UserDAOService dao = new UserDAOService();
+                                    GameController.currentGames[roomName].UpdateScores("Robot");
+                                    foreach (var key in GameController.currentGames[roomName].GetKeysOfPlayers())
+                                    {
+                                            await Clients.Client(players.First(p => p.Value == key).Key).SendAsync("Message", "Az új pontod: "
+                                                + dao.FindUserByName(key).Score,
+                                                "error");
+                                                                         }
                                     GameController.currentGames.Remove(roomName);
-                                    GameController.currentGames[roomName].UpdateScores(players[Context.ConnectionId]);
                                     await Clients.Group(roomName).SendAsync("GameEnded", "Robot");
                                     return;
                                 }
@@ -53,11 +60,22 @@ namespace AIMoba.Hubs
                             }
                         }
                         else // A játéknak vége van
-                        {
-                            
+                        {                            
+                            UserDAOService dao = new UserDAOService();
                             GameController.currentGames[roomName].UpdateScores(players[Context.ConnectionId]);
-                              GameController.currentGames.Remove(roomName);
-                              await Clients.Group(roomName).SendAsync("GameEnded", players[Context.ConnectionId]);
+                            await Clients.Caller.SendAsync("Message", "Az új pontod: " +dao.FindUserByName(players[Context.ConnectionId]).Score, "success");
+                            foreach(var key in GameController.currentGames[roomName].GetKeysOfPlayers())
+                            {
+                                if (key != players[Context.ConnectionId])
+                                {
+                                    await Clients.Client(players.First(p => p.Value == key).Key).SendAsync("Message", "Az új pontod: "
+                                        + dao.FindUserByName(key).Score,
+                                        "error");
+                                }
+                            }
+                            
+                            GameController.currentGames.Remove(roomName);
+                            await Clients.Group(roomName).SendAsync("GameEnded", players[Context.ConnectionId]);
                         }
 
                     }

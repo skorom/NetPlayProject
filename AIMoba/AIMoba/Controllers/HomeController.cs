@@ -139,15 +139,24 @@ namespace AIMoba.Controllers
         public IActionResult RedirectToLogin()
         {
             string name = HttpContext.Request.Form["name"];
-            string password = HttpContext.Request.Form["password"]; 
-            User currentUser = UserDAOService.Register(name, password);
-            if (currentUser!=null)
+            string password = HttpContext.Request.Form["password"];
+            string repassword = HttpContext.Request.Form["repassword"];
+            User currentUser = new User();
+            if (password == repassword)
             {
-                return RedirectToAction("Login", "Home"); 
+                if (UserDAOService.Register(name, password) != null)
+                {
+                    //TODO: alert hogy a felhasználónév már foglalt
+                    return RedirectToAction("Login", "Home");
+                }
+                else
+                {
+                    return RedirectToAction("Register", "Home");
+                }
             }
             else
             {
-                return RedirectToAction("Error", "Home");
+                return RedirectToAction("Register", "Home");
             }
         }
 
